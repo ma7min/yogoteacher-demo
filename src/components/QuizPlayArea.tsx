@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, Component, ErrorInfo, ReactNode } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Check, X, Award, ChevronRight, HelpCircle, AlertCircle, RefreshCw, BookOpen, Clock, Activity, CornerDownRight, Bookmark } from 'lucide-react';
 import { Question, formatKouAndGou, formatBlanks } from '../types';
@@ -151,7 +151,7 @@ const buildQuizGroups = (questions: Question[]): QuizGroup[] => {
   return groups;
 };
 
-export const QuizPlayArea: React.FC<QuizPlayAreaProps> = ({
+const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
   filteredQuestions,
   onFinishQuiz,
   onGoBack,
@@ -710,4 +710,41 @@ export const QuizPlayArea: React.FC<QuizPlayAreaProps> = ({
     </div>
   );
 };
+
+class QuizErrorBoundary extends Component<{ children: ReactNode; onGoBack: () => void }, { hasError: boolean; error: Error | null }> {
+  constructor(props: any) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error: Error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error: Error, info: ErrorInfo) {
+    console.error('QuizPlayArea error:', error, info);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div className="max-w-xl mx-auto py-12 text-center space-y-4">
+          <div className="text-rose-500 text-5xl">⚠️</div>
+          <p className="text-rose-600 font-bold text-sm">問題の読み込み中にエラーが発生しました。</p>
+          <p className="text-gray-400 text-xs">{this.state.error?.message}</p>
+          <button
+            onClick={() => { this.setState({ hasError: false, error: null }); this.props.onGoBack(); }}
+            className="px-6 py-3 bg-teal-500 text-white font-bold rounded-2xl text-sm cursor-pointer"
+          >
+            トップに戻る
+          </button>
+        </div>
+      );
+    }
+    return this.props.children;
+  }
+}
+
+export const QuizPlayArea: React.FC<QuizPlayAreaProps> = (props) => (
+  <QuizErrorBoundary onGoBack={() => props.onGoBack()}>
+    <QuizPlayAreaInner {...props} />
+  </QuizErrorBoundary>
+);
 
