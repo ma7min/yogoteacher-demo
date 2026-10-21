@@ -88,7 +88,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ onGoBack, userEm
       return;
     }
 
-    const adminEmails = ['parakeetpp@gmail.com', 'm0725ishikawa@gmail.com', '23113041@kamakura-u.ac.jp'];
+    const adminEmails = ['admin@example.com'];
     if (!auth.currentUser || !auth.currentUser.email || !adminEmails.includes(auth.currentUser.email.toLowerCase())) {
       setAnnounceMsg({ text: "管理者権限が必要です。", isError: true });
       return;

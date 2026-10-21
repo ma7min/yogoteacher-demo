@@ -14,7 +14,7 @@ export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ onCl
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
 
-  const adminEmails = ['parakeetpp@gmail.com', 'm0725ishikawa@gmail.com', '23113041@kamakura-u.ac.jp'];
+  const adminEmails = ['admin@example.com'];
   const isAdmin = adminEmails.includes(userEmail?.toLowerCase() || '');
 
   useEffect(() => {

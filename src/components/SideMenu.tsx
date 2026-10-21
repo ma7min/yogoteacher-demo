@@ -138,7 +138,7 @@ export const SideMenu: React.FC<SideMenuProps> = ({
                     レポート
                   </button>
                 </li>
-                {['parakeetpp@gmail.com', '23113041@kamakura-u.ac.jp', 'm0725ishikawa@gmail.com'].includes(userEmail?.toLowerCase() || '') && (
+                {['admin@example.com'].includes(userEmail?.toLowerCase() || '') && (
                   <li>
                     <button
                       onClick={() => {
