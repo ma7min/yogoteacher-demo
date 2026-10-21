@@ -526,11 +526,11 @@ export const QuizPlayArea: React.FC<QuizPlayAreaProps> = ({
           </div>
           {onToggleBookmark && (
             <button
-              onClick={() => onToggleBookmark(currentGroup.questions[0].id)}
-              className={`shrink-0 p-1.5 rounded-lg transition-colors ${bookmarks?.has(currentGroup.questions[0].id) ? 'text-amber-500 bg-amber-50' : 'text-gray-300 hover:text-amber-400 hover:bg-amber-50'}`}
-              title={bookmarks?.has(currentGroup.questions[0].id) ? 'ブックマーク解除' : 'ブックマーク登録'}
+              onClick={() => onToggleBookmark(currentGroup.id)}
+              className={`shrink-0 p-1.5 rounded-lg transition-colors ${bookmarks?.has(currentGroup.id) ? 'text-amber-500 bg-amber-50' : 'text-gray-300 hover:text-amber-400 hover:bg-amber-50'}`}
+              title={bookmarks?.has(currentGroup.id) ? 'ブックマーク解除' : 'ブックマーク登録'}
             >
-              <Bookmark className={`w-4 h-4 ${bookmarks?.has(currentGroup.questions[0].id) ? 'fill-amber-500' : ''}`} />
+              <Bookmark className={`w-4 h-4 ${bookmarks?.has(currentGroup.id) ? 'fill-amber-500' : ''}`} />
             </button>
           )}
         </div>
