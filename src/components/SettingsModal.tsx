@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, Palette, User, Check, Shield, Clock, Save, CheckCircle2, AlertCircle } from 'lucide-react';
-import { NotificationSettings } from './NotificationSettings';
 import { db } from '../lib/firebase';
 import { doc, updateDoc, getDoc, setDoc, serverTimestamp } from 'firebase/firestore';
 import { UserProfile } from '../types';
@@ -229,10 +228,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({
         </h2>
 
         <div className="space-y-6">
-          {/* 1. 学習リマインダー・プッシュ通知設定 */}
-          <div>
-            <NotificationSettings userId={currentUser?.uid} />
-          </div>
+          {/* 文化祭展示版: 学習リマインダー・プッシュ通知設定は省略 */}
 
           {/* 2. テーマカラー設定 */}
           <div className="space-y-3 pt-2 border-t border-slate-100">

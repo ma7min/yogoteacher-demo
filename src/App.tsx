@@ -484,7 +484,8 @@ export default function App() {
     } else if (mode === 'report') {
       setCurrentScreen('report');
     } else if (mode === 'pdf-maker') {
-      setCurrentScreen('pdf-maker');
+      // 文化祭展示版: PDF読み込み機能はセキュリティ上の理由で無効化
+      alert('この機能は文化祭展示中はご利用いただけません。\n(ネットワークのセキュリティ上の理由により、PDFアップロード機能を一時停止しています)');
     } else {
       setCurrentScreen('selection');
     }
