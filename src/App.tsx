@@ -565,81 +565,16 @@ export default function App() {
     localStorage.removeItem('saved_quiz_state');
   };
 
-  // AI Advice Center fetching (Gemini full-stack server integration)
-  const handleTriggerAIAdvice = async () => {
-    setAdviceLoading(true);
-    setAdviceText(null);
-    try {
-      // Format current user's statistics
-      const rawHistory = Object.entries(answerHistory).map(([id, isCorrect]) => {
-        const found = questions.find(q => q.id === Number(id));
-        return {
-          id: Number(id),
-          isCorrect,
-          question: found?.question || '',
-          field: found?.field || '未分類'
-        };
-      });
+  const FESTIVAL_NOTICE = "🎪 この機能は文化祭展示中はご利用いただけません。\nぜひクイズにチャレンジしてみてください！";
 
-      const response = await fetch("/api/gemini/advice", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ history: rawHistory }),
-      });
-      
-      const data = await response.json();
-      if (response.ok) {
-        setAdviceText(data.advice || "アドバイスが取得できませんでした。");
-      } else {
-        setAdviceText(`エラー: ${data.error || "アドバイスの取得中に問題が生じました。"}`);
-      }
-    } catch (error: any) {
-      console.error(error);
-      setAdviceText("サーバーエラーが発生しました。Geminiとの接続状態をお確かめください。");
-    } finally {
-      setAdviceLoading(false);
-    }
+  // AI Advice Center — disabled during festival
+  const handleTriggerAIAdvice = async () => {
+    alert(FESTIVAL_NOTICE);
   };
 
-  // AI customized practice quiz generation (Gemini full-stack server integration)
-  const handleStartAiQuiz = async (difficulty: string) => {
-    setAiQuizLoading(true);
-    try {
-      const response = await fetch("/api/gemini/generate-questions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ difficulty }),
-      });
-
-      const data = await response.json();
-      if (response.ok && data.questions) {
-        const aiQuestions: Question[] = data.questions.map((q: any) => ({
-          ...q,
-          id: Date.now() + Math.floor(Math.random() * 100000),
-          year: 'AI予想問題'
-        }));
-        // AI予想問題を活性問題リストに入れて開始
-        setQuizFilteredQuestions(aiQuestions);
-        setCurrentScreen('play');
-        // 自動的にお気に入りなどのアプレットに追加されるようにする
-        setQuestions(prev => {
-          const newQuestions = aiQuestions.filter(aiQ => !prev.some(q => q.id === aiQ.id));
-          const updated = [...prev, ...newQuestions];
-          try {
-            const aiOnly = updated.filter(q => q.year === 'AI予想問題');
-            localStorage.setItem('ai_archived_questions', JSON.stringify(aiOnly));
-          } catch(e) {}
-          return updated;
-        });
-      } else {
-        alert(`AI問題の生成に失敗しました: ${data.error || '不明なエラー'}`);
-      }
-    } catch (error) {
-      console.error(error);
-      alert("AI問題生成APIへの接続がタイムアウトしたか、エラーが生じました。");
-    } finally {
-      setAiQuizLoading(false);
-    }
+  // AI quiz generation — disabled during festival
+  const handleStartAiQuiz = async (_difficulty: string) => {
+    alert(FESTIVAL_NOTICE);
   };
 
   // Past quiz filtered start
