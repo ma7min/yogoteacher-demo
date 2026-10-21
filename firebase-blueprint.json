@@ -1,0 +1,198 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "ユーザーの学年・所属学科・ニックネームおよび毎日の学習リマインダー通知時間（dailyReminderTime）",
+      "type": "object",
+      "properties": {
+        "grade": {
+          "type": "string",
+          "description": "学年 (例: 1年, 2年, 3年, 4年, 大学院生, その他)"
+        },
+        "department": {
+          "type": "string",
+          "description": "所属学科 (例: 家政保健, 子ども心理, その他)"
+        },
+        "diaryName": {
+          "type": "string",
+          "maxLength": 50,
+          "description": "日記ネーム・ニックネーム"
+        },
+        "dailyReminderTime": {
+          "type": "string",
+          "pattern": "^([01]?[0-9]|2[0-3]):[0-5][0-9]$",
+          "description": "通知を受け取る希望時刻 (HH:mm, 例: 20:00)"
+        },
+        "email": {
+          "type": "string",
+          "description": "ユーザーのメールアドレス"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "更新日時"
+        }
+      },
+      "required": ["grade", "department", "diaryName"]
+    },
+    "ExamAnswer": {
+      "title": "ExamAnswer",
+      "description": "養護教諭採用試験の各ユーザーのクイズ解答データ",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "解答したユーザーのUID"
+        },
+        "userEmail": {
+          "type": "string",
+          "description": "解答したユーザーのメールアドレス"
+        },
+        "problemId": {
+          "type": "integer",
+          "description": "問題のユニークID"
+        },
+        "field": {
+          "type": "string",
+          "description": "出題分野 (例: 学校保健安全法, 救急処置)"
+        },
+        "questionText": {
+          "type": "string",
+          "description": "出題された問題内容"
+        },
+        "isCorrect": {
+          "type": "boolean",
+          "description": "正解か不正解か"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "解答が行われた日時"
+        }
+      },
+      "required": ["userId", "userEmail", "problemId", "isCorrect", "timestamp"]
+    },
+    "SessionSummary": {
+      "title": "SessionSummary",
+      "description": "1つのクイズセッションの全解答（1セッション1回書き込みで制限を90%以上削減）",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ユーザーのUID"
+        },
+        "userEmail": {
+          "type": "string",
+          "description": "ユーザーのメールアドレス"
+        },
+        "score": {
+          "type": "integer",
+          "description": "当セッションの正解問題数"
+        },
+        "total": {
+          "type": "integer",
+          "description": "当セッションの総問題数"
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time",
+          "description": "セッション保存の日時"
+        },
+        "answers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "problemId": { "type": "integer" },
+              "field": { "type": "string" },
+              "questionText": { "type": "string" },
+              "isCorrect": { "type": "boolean" }
+            }
+          }
+        }
+      },
+      "required": ["userId", "userEmail", "score", "total", "answers", "timestamp"]
+    },
+    "PdfWorkspace": {
+      "title": "PdfWorkspace",
+      "description": "ユーザーが保存したマーカー付きのPDF/画像ワークスペース",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ユーザーのUID"
+        },
+        "title": {
+          "type": "string",
+          "maxLength": 100,
+          "description": "ワークスペースのタイトル"
+        },
+        "fileUrl": {
+          "type": "string",
+          "description": "Firebase Storageに保存されたPDF/画像のダウンロードURL"
+        },
+        "fileType": {
+          "type": "string",
+          "enum": ["pdf", "image"],
+          "description": "ファイルタイプ"
+        },
+        "markers": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string" },
+              "pageIndex": { "type": "integer" },
+              "x": { "type": "number" },
+              "y": { "type": "number" },
+              "width": { "type": "number" },
+              "height": { "type": "number" }
+            }
+          },
+          "description": "マーカーの配列"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "作成日時"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "更新日時"
+        }
+      },
+      "required": ["userId", "title", "fileUrl", "fileType", "markers", "createdAt", "updatedAt"]
+    }
+  },
+  "firestore": {
+    "/workspaces/{workspaceId}": {
+      "schema": "PdfWorkspace",
+      "description": "ユーザーが保存したマーカー付きPDF/画像のワークスペース"
+    },
+    "/examAnswers/{answerId}": {
+      "schema": "ExamAnswer",
+      "description": "全ユーザーの解答ログ（管理者が研究の一括データ出力に用いるレガシーパス）"
+    },
+    "/aiExamAnswers/{answerId}": {
+      "schema": "ExamAnswer",
+      "description": "AI予想問題専用の全ユーザーの解答ログ"
+    },
+    "/sessionSummaries/{summaryId}": {
+      "schema": "SessionSummary",
+      "description": "セッションごとの集約解答ログ (パフォーマンス/書き込み回数制限回避のメインパス)"
+    },
+    "/aiSessionSummaries/{summaryId}": {
+      "schema": "SessionSummary",
+      "description": "AI予想問題専用のセッションごとの集約解答ログ"
+    },
+    "/users/{userId}/examAnswers/{answerId}": {
+      "schema": "ExamAnswer",
+      "description": "個別ユーザーごとの解答ログ（自身の正答率計算・弱点克服・解きなおしに用いるレガシーパス）"
+    },
+    "/users/{userId}/status/profile": {
+      "schema": "UserProfile",
+      "description": "ユーザーのプロフィール情報およびリマインダー通知時間設定（dailyReminderTime）"
+    }
+  }
+}

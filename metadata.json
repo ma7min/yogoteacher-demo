@@ -1,0 +1,8 @@
+{
+  "name": "Remix: 養護教諭採用試験 過去問クイズアプリ",
+  "description": "養護教諭採用試験の過去問を解き、学習進捗をスマートにダッシュボードで可視化しながら、AIによる学習アドバイスや予想問題の自動生成を受けることができる、専門対策の徹底指導クイズアプリケーションです。",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}

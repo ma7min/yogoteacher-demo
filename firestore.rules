@@ -1,0 +1,100 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // 共通ログインチェック関数
+    function isSignedIn() {
+      return request.auth != null && request.auth.uid != null;
+    }
+    
+    // 管理者チェック (複数の候補を許可)
+    function isAdmin() {
+      return request.auth != null && 
+             request.auth.token != null && 
+             'email' in request.auth.token && 
+             (request.auth.token.email.lower() == 'parakeetpp@gmail.com' || 
+              request.auth.token.email.lower() == 'm0725ishikawa@gmail.com' || 
+              request.auth.token.email.lower() == '23113041@kamakura-u.ac.jp');
+    }
+
+    // 1. 各ユーザー個人の記録（学習履歴・お気に入りなど）
+    match /users/{userId} {
+      // プロフィールやランキングポイントは全ユーザーから読み取り可能にする
+      allow read: if true;
+      allow write: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+      
+      match /{document=**} {
+        allow read, write: if (isSignedIn() && request.auth.uid == userId) || isAdmin();
+      }
+    }
+
+    match /friendRequests/{requestId} {
+      allow create: if isSignedIn() && request.resource.data.fromUid == request.auth.uid;
+      allow read, update, delete: if isSignedIn() && (resource.data.fromUid == request.auth.uid || resource.data.toUid == request.auth.uid);
+    }
+
+    match /friends/{userId}/userFriends/{friendId} {
+      allow read: if isSignedIn() && request.auth.uid == userId;
+      allow write: if isSignedIn() && request.auth.uid == userId;
+    }
+
+    match /activities/{activityId} {
+      allow read: if true;
+      allow create: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow update: if isSignedIn(); // 応援(cheer)の更新を許可
+      allow delete: if isSignedIn() && (resource.data.userId == request.auth.uid || isAdmin());
+    }
+    
+    // システム通知用コレクション (個人宛の通知)
+    match /userNotifications/{userId}/notifications/{notificationId} {
+      allow read, write: if isSignedIn() && request.auth.uid == userId;
+    }
+    
+    // 2. 卒業論文用・セッション集約回答ログ（sessionSummaries）
+    match /sessionSummaries/{documentId} {
+      allow create, update: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, list: if resource == null || isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // 2.5. AI予想問題専用のセッション集約回答ログ（aiSessionSummaries）
+    match /aiSessionSummaries/{documentId} {
+      allow create, update: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, list: if resource == null || isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+    
+    // 3. 従来の1問ごとの回答群（examAnswers）※下位互換用
+    match /examAnswers/{documentId} {
+      allow create, update: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, list: if resource == null || isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // 3.5. AI予想問題専用の1問ごとの回答群（aiExamAnswers）
+    match /aiExamAnswers/{documentId} {
+      allow create, update: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, list: if resource == null || isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow delete: if isAdmin();
+    }
+
+    // 4. お知らせ用コレクション
+    match /app_updates/{documentId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // 5. 旧通知用コレクション (互換性用)
+    match /notifications/{documentId} {
+      allow read: if true;
+      allow create, update, delete: if isAdmin();
+    }
+
+    // 6. PDFマーカー機能のワークスペース
+    match /workspaces/{workspaceId} {
+      allow create, update: if isSignedIn() && request.resource.data.userId == request.auth.uid;
+      allow read, list: if resource == null || (resource.data.keys().hasAll(['isPublic']) && resource.data.isPublic == true) || (isSignedIn() && ( (resource.data.keys().hasAll(['userId']) && resource.data.userId == request.auth.uid) || isAdmin()));
+      allow delete: if isSignedIn() && (resource == null || (resource.data.keys().hasAll(['userId']) && resource.data.userId == request.auth.uid) || isAdmin());
+    }
+  }
+}
