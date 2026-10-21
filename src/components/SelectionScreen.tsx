@@ -59,7 +59,8 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
   const [selectedYears, setSelectedYears] = useState<string[]>(availableYears);
   const [selectedFields, setSelectedFields] = useState<string[]>(availableFields);
 
-  const [selectedPrefs, setSelectedPrefs] = useState<string[]>([]);
+  const availablePrefs = Array.from(new Set(baseQuestions.map(q => q.prefecture).filter(Boolean))) as string[];
+  const [selectedPrefs, setSelectedPrefs] = useState<string[]>(availablePrefs);
   const [openRegions, setOpenRegions] = useState<Record<string, boolean>>({});
 
   // Mode: AI expected difficulty state

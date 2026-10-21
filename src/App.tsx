@@ -27,7 +27,7 @@ import { FriendsScreen } from './components/FriendsScreen';
 export default function App() {
   // Authentication states
   const [currentUser, setCurrentUser] = useState<User | null>(null);
-  const [demoUserEmail, setDemoUserEmail] = useState<string | null>(null);
+  const [demoUserEmail, setDemoUserEmail] = useState<string | null>('demo-student@kamakura-u.ac.jp');
   const [authLoading, setAuthLoading] = useState(true);
   const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
   const [showProfileSetup, setShowProfileSetup] = useState(false);
@@ -307,9 +307,16 @@ export default function App() {
       }
     }
 
-    // 3. なければプロフィール設定モーダルを表示
-    setUserProfile(null);
-    setShowProfileSetup(true);
+    // 3. 文化祭展示版: プロフィール設定モーダルは表示せずデフォルト値を自動設定
+    const defaultProfile: UserProfile = {
+      grade: '大学院生',
+      department: '文化祭ゲスト',
+      diaryName: 'ゲスト',
+      dailyReminderTime: '20:00'
+    };
+    localStorage.setItem(localKey, JSON.stringify(defaultProfile));
+    setUserProfile(defaultProfile);
+    setShowProfileSetup(false);
   };
 
   const handleThemeChange = async (newTheme: string) => {
@@ -379,18 +386,12 @@ export default function App() {
   useEffect(() => {
     if (isFirebaseMock || !auth) {
       setAuthLoading(false);
-      // Load saved values if they are demo fallback user
-      const savedDemo = localStorage.getItem('demo_user_email');
-      if (savedDemo) {
-        setDemoUserEmail(savedDemo);
-        loadLocalHistory(savedDemo);
-        loadTodayStats(savedDemo);
-        loadUserProfile(savedDemo);
-      } else {
-        loadTodayStats('guest');
-        setUserProfile(null);
-        setShowProfileSetup(false);
-      }
+      // 文化祭展示版: ログイン不要 — デモメールで自動スタート
+      const demoEmail = 'demo-student@kamakura-u.ac.jp';
+      setDemoUserEmail(demoEmail);
+      loadLocalHistory(demoEmail);
+      loadTodayStats(demoEmail);
+      loadUserProfile(demoEmail);
       return;
     }
 
@@ -403,10 +404,12 @@ export default function App() {
         loadTodayStats(user.uid);
         loadUserProfile(user.uid);
       } else {
-        setAnswerHistory({});
-        loadTodayStats('guest');
-        setUserProfile(null);
-        setShowProfileSetup(false);
+        // 文化祭展示版: ログイン不要 — デモメールで自動スタート
+        const demoEmail = 'demo-student@kamakura-u.ac.jp';
+        setDemoUserEmail(demoEmail);
+        loadLocalHistory(demoEmail);
+        loadTodayStats(demoEmail);
+        loadUserProfile(demoEmail);
       }
     });
 
