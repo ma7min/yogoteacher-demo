@@ -1256,21 +1256,21 @@ export default function App() {
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {[
             { label: 'ホーム', icon: Home, action: () => handleTabChange('home'), active: currentScreen === 'dash' && dashTab === 'home' },
-            { label: '学習', icon: BookOpen, action: () => handleTabChange('study'), active: (currentScreen === 'dash' && dashTab === 'study') || currentScreen === 'selection' },
-            { label: '分析', icon: BarChart3, action: () => handleTabChange('analysis'), active: currentScreen === 'dash' && dashTab === 'analysis' },
+            { label: 'クイズを解く', icon: BookOpen, action: () => handleTabChange('study'), active: (currentScreen === 'dash' && dashTab === 'study') || currentScreen === 'selection' },
+            { label: '成績・分析', icon: BarChart3, action: () => handleTabChange('analysis'), active: currentScreen === 'dash' && dashTab === 'analysis' },
             { label: 'フレンド', icon: Users, action: () => handleTabChange('friends'), active: currentScreen === 'friends' },
-            { label: 'レポート', icon: ClipboardList, action: () => handleTabChange('report'), active: currentScreen === 'report' },
+            { label: '問題レポート', icon: ClipboardList, action: () => handleTabChange('report'), active: currentScreen === 'report' },
           ].map(({ label, icon: Icon, action, active }) => (
             <button
               key={label}
               onClick={action}
-              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold transition-all cursor-pointer ${
+              className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-sm font-bold transition-all duration-150 active:scale-95 cursor-pointer ${
                 active
-                  ? 'bg-teal-50 text-teal-700 shadow-sm'
-                  : 'text-gray-500 hover:bg-slate-50 hover:text-gray-800'
+                  ? 'bg-teal-50 text-teal-700 border-l-4 border-teal-500 pl-2 shadow-sm'
+                  : 'text-gray-500 hover:bg-slate-50 hover:text-gray-800 border-l-4 border-transparent'
               }`}
             >
-              <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-teal-600' : ''}`} />
+              <Icon className={`w-4 h-4 shrink-0 ${active ? 'text-teal-600 stroke-[2.5]' : 'stroke-[1.5]'}`} />
               {label}
             </button>
           ))}
@@ -1518,53 +1518,34 @@ service cloud.firestore {
 
       {/* Bottom Navigation Bar：スマホ・タブレットのみ表示 */}
       {currentScreen !== 'play' && currentScreen !== 'admin' && currentScreen !== 'pdf-maker' && (
-        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-teal-50 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)] z-40 pb-safe">
-          <div className="max-w-4xl mx-auto px-2 flex justify-between">
-            <button
-              onClick={() => handleTabChange('home')}
-              className={`flex-1 py-3 flex flex-col items-center gap-1 transition-colors cursor-pointer ${
-                currentScreen === 'dash' && dashTab === 'home' ? 'text-teal-600' : 'text-gray-400 hover:text-teal-500'
-              }`}
-            >
-              <Home className={`w-5 h-5 ${currentScreen === 'dash' && dashTab === 'home' ? 'fill-teal-50' : ''}`} />
-              <span className="text-[10px] font-bold">ホーム</span>
-            </button>
-            <button
-              onClick={() => handleTabChange('study')}
-              className={`flex-1 py-3 flex flex-col items-center gap-1 transition-colors cursor-pointer ${
-                (currentScreen === 'dash' && dashTab === 'study') || currentScreen === 'selection' ? 'text-teal-600' : 'text-gray-400 hover:text-teal-500'
-              }`}
-            >
-              <BookOpen className={`w-5 h-5 ${((currentScreen === 'dash' && dashTab === 'study') || currentScreen === 'selection') ? 'fill-teal-50' : ''}`} />
-              <span className="text-[10px] font-bold">学習</span>
-            </button>
-            <button
-              onClick={() => handleTabChange('analysis')}
-              className={`flex-1 py-3 flex flex-col items-center gap-1 transition-colors cursor-pointer ${
-                currentScreen === 'dash' && dashTab === 'analysis' ? 'text-teal-600' : 'text-gray-400 hover:text-teal-500'
-              }`}
-            >
-              <BarChart3 className={`w-5 h-5 ${currentScreen === 'dash' && dashTab === 'analysis' ? 'fill-teal-50' : ''}`} />
-              <span className="text-[10px] font-bold">分析</span>
-            </button>
-            <button
-              onClick={() => handleTabChange('friends')}
-              className={`flex-1 py-3 flex flex-col items-center gap-1 transition-colors cursor-pointer ${
-                currentScreen === 'friends' ? 'text-teal-600' : 'text-gray-400 hover:text-teal-500'
-              }`}
-            >
-              <Users className={`w-5 h-5 ${currentScreen === 'friends' ? 'fill-teal-50' : ''}`} />
-              <span className="text-[10px] font-bold">フレンド</span>
-            </button>
-            <button
-              onClick={() => handleTabChange('report')}
-              className={`flex-1 py-3 flex flex-col items-center gap-1 transition-colors cursor-pointer ${
-                currentScreen === 'report' ? 'text-teal-600' : 'text-gray-400 hover:text-teal-500'
-              }`}
-            >
-              <ClipboardList className={`w-5 h-5 ${currentScreen === 'report' ? 'fill-teal-50' : ''}`} />
-              <span className="text-[10px] font-bold">レポート</span>
-            </button>
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-100 shadow-[0_-4px_24px_-6px_rgba(0,0,0,0.12)] z-40 pb-safe">
+          <div className="max-w-4xl mx-auto flex justify-between">
+            {(() => {
+              const tabs = [
+                { key: 'home' as const, label: 'ホーム', icon: Home, active: currentScreen === 'dash' && dashTab === 'home' },
+                { key: 'study' as const, label: 'クイズ', icon: BookOpen, active: (currentScreen === 'dash' && dashTab === 'study') || currentScreen === 'selection' },
+                { key: 'analysis' as const, label: '成績', icon: BarChart3, active: currentScreen === 'dash' && dashTab === 'analysis' },
+                { key: 'friends' as const, label: 'フレンド', icon: Users, active: currentScreen === 'friends' },
+                { key: 'report' as const, label: 'レポート', icon: ClipboardList, active: currentScreen === 'report' },
+              ];
+              return tabs.map(({ key, label, icon: Icon, active }) => (
+                <button
+                  key={key}
+                  onClick={() => handleTabChange(key)}
+                  className={`flex-1 pt-1 pb-3 flex flex-col items-center gap-1 transition-all duration-150 active:scale-95 cursor-pointer relative ${
+                    active ? 'text-teal-600' : 'text-gray-400'
+                  }`}
+                >
+                  {/* アクティブインジケーター（上線） */}
+                  <span className={`absolute top-0 left-2 right-2 h-0.5 rounded-b-full transition-all duration-200 ${active ? 'bg-teal-500' : 'bg-transparent'}`} />
+                  {/* アイコン背景 */}
+                  <span className={`p-1.5 rounded-xl transition-all duration-200 ${active ? 'bg-teal-50' : ''}`}>
+                    <Icon className={`w-5 h-5 transition-all duration-200 ${active ? 'stroke-[2.5]' : 'stroke-[1.5]'}`} />
+                  </span>
+                  <span className={`text-xs font-bold transition-all duration-200 ${active ? 'text-teal-700' : 'text-gray-400'}`}>{label}</span>
+                </button>
+              ));
+            })()}
           </div>
         </div>
       )}
