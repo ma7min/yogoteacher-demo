@@ -506,9 +506,9 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
           <button
             onClick={() => handleBeginPastQuiz(false)}
             disabled={hitCount === 0}
-            className="w-full py-4 bg-teal-500 hover:bg-teal-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-extrabold rounded-2xl shadow-lg shadow-teal-500/20 text-center transition-all cursor-pointer text-sm"
+            className="w-full py-5 bg-teal-500 hover:bg-teal-600 active:scale-95 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-extrabold rounded-2xl shadow-xl shadow-teal-500/30 text-center transition-all duration-150 cursor-pointer text-base"
           >
-            {hitCount > 0 ? `${hitCount}問で過去問演習スタート` : '条件を選択してください'}
+            {hitCount > 0 ? `▶ ${hitCount}問で過去問演習スタート` : '条件を選択してください'}
           </button>
         </div>
       )}
@@ -921,10 +921,10 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
           <button
             onClick={handleBeginReviewQuiz}
             disabled={reviewFilteredCount === 0}
-            className="w-full py-4 bg-rose-500 hover:bg-rose-600 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-extrabold rounded-2xl shadow-lg shadow-rose-500/20 text-center transition-all cursor-pointer text-sm"
+            className="w-full py-5 bg-rose-500 hover:bg-rose-600 active:scale-95 disabled:bg-gray-200 disabled:text-gray-400 disabled:cursor-not-allowed text-white font-extrabold rounded-2xl shadow-xl shadow-rose-500/30 text-center transition-all duration-150 cursor-pointer text-base"
           >
             {reviewFilteredCount > 0
-              ? `${reviewFilteredCount}問で弱点克服スタート！`
+              ? `▶ ${reviewFilteredCount}問で弱点克服スタート！`
               : '該当する問題がありません'}
           </button>
         </div>

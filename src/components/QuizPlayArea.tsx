@@ -463,7 +463,7 @@ const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
 
           <button
             onClick={handleFinishAndReturn}
-            className="w-full py-4 bg-teal-500 hover:bg-teal-600 text-white font-extrabold rounded-2xl shadow-lg shadow-teal-500/20 transition-all cursor-pointer text-sm"
+            className="w-full py-4 bg-teal-500 hover:bg-teal-600 active:scale-95 text-white font-extrabold rounded-2xl shadow-lg shadow-teal-500/30 transition-all duration-150 cursor-pointer text-base"
           >
             ダッシュボードに戻る
           </button>
@@ -601,9 +601,9 @@ const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
                 key={idx}
                 disabled={isAnswered}
                 onClick={() => handleChoiceSubmit(choiceNum)}
-                className={`w-full flex items-center gap-3.5 p-4 rounded-xl border text-left transition-all group focus:outline-none ${blockClass}`}
+                className={`w-full flex items-center gap-3.5 p-4 md:p-5 rounded-xl border text-left transition-all duration-150 active:scale-[0.98] group focus:outline-none ${blockClass}`}
               >
-                <div className={`w-6 h-6 rounded-lg flex items-center justify-center border font-mono text-xs shrink-0 transition-colors ${circleClass}`}>
+                <div className={`w-8 h-8 rounded-lg flex items-center justify-center border font-mono text-sm shrink-0 transition-colors ${circleClass}`}>
                   {isAnswered && isCorrectAnswer ? (
                     <Check className="w-4 h-4 stroke-[3]" />
                   ) : isAnswered && isSelected ? (
@@ -612,7 +612,7 @@ const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
                     choiceNum
                   )}
                 </div>
-                <span className="text-xs md:text-sm leading-relaxed">{choice}</span>
+                <span className="text-sm md:text-base leading-relaxed">{choice}</span>
               </button>
             );
           })}
@@ -675,7 +675,7 @@ const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
               {/* Action: Next button */}
               <button
                 onClick={handleNext}
-                className="w-full py-4 bg-teal-500 hover:bg-teal-600 text-white font-extrabold rounded-2xl shadow-md shadow-teal-500/10 flex items-center justify-center gap-2 transition-all cursor-pointer text-sm"
+                className="w-full py-4 bg-teal-500 hover:bg-teal-600 active:scale-95 text-white font-extrabold rounded-2xl shadow-lg shadow-teal-500/30 flex items-center justify-center gap-2 transition-all duration-150 cursor-pointer text-base"
               >
                 {currentStepIndex + 1 < currentGroup.steps.length ? (
                   <>
@@ -701,9 +701,9 @@ const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
         <div className="text-center">
           <button
             onClick={() => onGoBack(sessionHistory, activeQuestionNumber - 1)}
-            className="text-xs text-[#ff6f94]/70 hover:text-[#ff6f94] font-bold cursor-pointer transition-all focus:outline-none"
+            className="px-4 py-2 text-xs text-gray-400 hover:text-gray-600 font-bold cursor-pointer transition-all duration-150 active:scale-95 border border-gray-200 hover:border-gray-300 rounded-xl focus:outline-none"
           >
-            演習を中止して終了する
+            ← 演習を中止して戻る
           </button>
         </div>
       )}

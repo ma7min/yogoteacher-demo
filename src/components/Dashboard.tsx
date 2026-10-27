@@ -245,14 +245,14 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="flex flex-row flex-nowrap items-center justify-center md:justify-start gap-2 sm:gap-3 shrink-0">
                   <button
                     onClick={() => onStartRandom && onStartRandom(5)}
-                    className="px-4 sm:px-5 py-3 bg-white text-teal-700 font-bold rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 hover:bg-teal-50 shadow-md shadow-teal-900/10 transition-all transform hover:scale-105 cursor-pointer text-sm"
+                    className="px-4 sm:px-5 py-3.5 bg-white text-teal-700 font-extrabold rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 hover:bg-teal-50 active:scale-95 shadow-lg shadow-teal-900/15 transition-all duration-150 cursor-pointer text-sm"
                   >
                     <Shuffle className="w-4 h-4" />
                     ランダムで5問出題
                   </button>
                   <button
                     onClick={() => onStartRandom && onStartRandom(10)}
-                    className="px-4 sm:px-5 py-3 bg-white text-emerald-700 font-bold rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 hover:bg-emerald-50 shadow-md shadow-teal-900/10 transition-all transform hover:scale-105 cursor-pointer text-sm"
+                    className="px-4 sm:px-5 py-3.5 bg-white text-emerald-700 font-extrabold rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 hover:bg-emerald-50 active:scale-95 shadow-lg shadow-teal-900/15 transition-all duration-150 cursor-pointer text-sm"
                   >
                     <Shuffle className="w-4 h-4" />
                     ランダムで10問出題
