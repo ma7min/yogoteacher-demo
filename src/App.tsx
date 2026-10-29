@@ -1174,7 +1174,7 @@ export default function App() {
             </div>
             <div className="hidden sm:flex flex-col items-start leading-none text-left">
               <h1 className="font-black text-sm tracking-tight text-teal-800">養護教諭対策</h1>
-              <span className="text-[9px] text-teal-500 font-bold uppercase tracking-widest mt-0.5">Quiz & Partners</span>
+              <span className="text-xs text-teal-500 font-bold uppercase tracking-widest mt-0.5">Quiz & Partners</span>
             </div>
           </button>
 
@@ -1182,12 +1182,12 @@ export default function App() {
             {/* Firebase Connection Status Badge (卒業論文用・管理者確認ステータス) */}
             <div className="flex items-center">
               {currentUser && !isFirebaseMock ? (
-                <div className="inline-flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-emerald-50 border border-emerald-100/80 text-[10px] sm:text-xs font-bold text-emerald-600 shadow-sm transition-all whitespace-nowrap" title="Firebaseにしっかり接続され、回答状況がリアルタイム送信中になっています。">
-                  <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full shrink-0 animate-pulse" />
+                <div className="inline-flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-teal-50 border border-teal-100/80 text-xs sm:text-xs font-bold text-teal-600 shadow-sm transition-all whitespace-nowrap" title="Firebaseにしっかり接続され、回答状況がリアルタイム送信中になっています。">
+                  <span className="w-1.5 h-1.5 bg-teal-500 rounded-full shrink-0 animate-pulse" />
                   <span>同期中</span>
                 </div>
               ) : (
-                <div className="inline-flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-amber-50 border border-amber-100 text-[10px] sm:text-xs font-bold text-amber-600 shadow-sm whitespace-nowrap" title="ローカル保存モードです。卒論集計用のデータベースに接続されていません。通常のログイン（または新規アカウント作成）をやり直してください。">
+                <div className="inline-flex items-center gap-1.5 px-2 py-1 sm:px-2.5 sm:py-1.5 rounded-xl bg-amber-50 border border-amber-100 text-xs sm:text-xs font-bold text-amber-600 shadow-sm whitespace-nowrap" title="ローカル保存モードです。卒論集計用のデータベースに接続されていません。通常のログイン（または新規アカウント作成）をやり直してください。">
                   <span className="w-1.5 h-1.5 bg-amber-500 rounded-full shrink-0 animate-ping" />
                   <span>デモ (未送信)</span>
                 </div>
@@ -1262,7 +1262,7 @@ export default function App() {
           </div>
           <div className="flex flex-col leading-none">
             <span className="font-black text-sm tracking-tight text-teal-800">養護教諭対策</span>
-            <span className="text-[9px] text-teal-500 font-bold uppercase tracking-widest mt-0.5">Quiz & Partners</span>
+            <span className="text-xs text-teal-500 font-bold uppercase tracking-widest mt-0.5">Quiz & Partners</span>
           </div>
         </div>
 
@@ -1328,10 +1328,10 @@ export default function App() {
                 <h3 className="font-extrabold text-sm text-amber-900 flex items-center gap-1">
                   🚨 Firebase 接続エラー (データベースが未作成の可能性があります)
                 </h3>
-                <p className="text-[11px] text-amber-800 leading-relaxed font-semibold">
+                <p className="text-xs text-amber-800 leading-relaxed font-semibold">
                   現在、クラウドデータベース（Cloud Firestore）への保存・読込処理でアクセス制限エラー（Missing or insufficient permissions）が発生しています。
                 </p>
-                <div className="p-2.5 bg-white/70 rounded-xl text-[10px] text-amber-800 border border-amber-100 font-mono select-all overflow-x-auto max-w-full">
+                <div className="p-2.5 bg-white/70 rounded-xl text-xs text-amber-800 border border-amber-100 font-mono select-all overflow-x-auto max-w-full">
                   詳細ログ: {firebaseError}
                 </div>
               </div>
@@ -1343,7 +1343,7 @@ export default function App() {
                 💡 卒業論文の全解答ログを管理者画面（クラウド）に確実に保存するための修正手順：
               </p>
               
-              <div className="bg-white/40 p-4 rounded-2xl border border-amber-100 space-y-4 text-[11px]">
+              <div className="bg-white/40 p-4 rounded-2xl border border-amber-100 space-y-4 text-xs">
                 <div className="space-y-1">
                   <span className="font-black text-amber-950 block">手順 1. Firebase コンソールでデータベースを作成する</span>
                   <p className="text-gray-600 leading-relaxed pl-3">
@@ -1360,7 +1360,7 @@ export default function App() {
                     1. 「Firestore Database」画面の <strong>「ルール (Rules)」</strong> タブを開きます。<br />
                     2. すべての遠隔読み書きを安全に承認するため、既存のルールを以下に書き換え、 <strong>「公開 (Publish)」</strong> をクリックします：
                   </p>
-                  <pre className="bg-slate-900 text-amber-200 p-3 rounded-xl text-[10px] font-mono leading-normal select-all overflow-x-auto my-1">
+                  <pre className="bg-slate-900 text-amber-200 p-3 rounded-xl text-xs font-mono leading-normal select-all overflow-x-auto my-1">
 {`rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
@@ -1373,7 +1373,7 @@ service cloud.firestore {
                 </div>
               </div>
 
-              <div className="p-3 bg-teal-50 border border-teal-100 rounded-2xl flex items-start gap-2.5 text-[11px] text-teal-900 leading-relaxed">
+              <div className="p-3 bg-teal-50 border border-teal-100 rounded-2xl flex items-start gap-2.5 text-xs text-teal-900 leading-relaxed">
                 <span className="text-teal-600 text-xs mt-0.5">✨</span>
                 <div>
                   <span className="font-black block text-teal-950">学習はそのまま継続できます：</span>
@@ -1385,7 +1385,7 @@ service cloud.firestore {
             <div className="flex justify-end gap-2 pt-2">
               <button
                 onClick={() => setFirebaseError(null)}
-                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-[11px] rounded-xl transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white font-extrabold text-xs rounded-xl transition-all cursor-pointer shadow-sm hover:scale-[1.02]"
               >
                 手順を理解した（メッセージを非表示）
               </button>

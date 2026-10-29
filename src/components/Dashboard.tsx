@@ -288,7 +288,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
               </div>
             ) : (
-              <div className="p-6 bg-gradient-to-r from-teal-500 to-emerald-500 rounded-3xl shadow-lg shadow-teal-500/10 text-white flex flex-col md:flex-row items-center justify-between gap-6">
+              <div className="p-6 bg-gradient-to-r from-teal-500 to-teal-500 rounded-3xl shadow-lg shadow-teal-500/10 text-white flex flex-col md:flex-row items-center justify-between gap-6">
                 <div className="space-y-2 text-center md:text-left">
                   <div className="flex items-center justify-center md:justify-start gap-2">
                     <GraduationCap className="w-8 h-8" />
@@ -317,7 +317,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </button>
                   <button
                     onClick={() => onStartRandom && onStartRandom(10)}
-                    className="px-4 sm:px-5 py-3.5 bg-white text-emerald-700 font-extrabold rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 hover:bg-emerald-50 active:scale-95 shadow-lg shadow-teal-900/15 transition-all duration-150 cursor-pointer text-sm"
+                    className="px-4 sm:px-5 py-3.5 bg-white text-teal-700 font-extrabold rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 hover:bg-teal-50 active:scale-95 shadow-lg shadow-teal-900/15 transition-all duration-150 cursor-pointer text-sm"
                   >
                     <Shuffle className="w-4 h-4" />
                     ランダムで10問出題
@@ -331,7 +331,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* Progress Circular Graph Card */}
               <div className="bg-white p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-teal-50/50 shadow-xl flex flex-col items-center justify-between relative min-h-[210px] sm:min-h-[235px]">
                 <div className="flex items-center justify-between w-full mb-1 sm:mb-2">
-                  <h4 className="font-bold text-gray-800 text-[11px] sm:text-[12px] flex items-center gap-1">
+                  <h4 className="font-bold text-gray-800 text-xs sm:text-xs flex items-center gap-1">
                     <span>総学習達成度</span>
                   </h4>
                   {onRefreshHistory && (
@@ -339,7 +339,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       onClick={onRefreshHistory}
                       disabled={isSyncingHistory}
                       title="クラウドの解答履歴を再読み込み"
-                      className="p-1 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1 text-[9px] font-bold"
+                      className="p-1 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1 text-xs font-bold"
                     >
                       <RefreshCw className={`w-3 h-3 ${isSyncingHistory ? 'animate-spin' : ''}`} />
                       <span className="hidden sm:inline">再同期</span>
@@ -350,20 +350,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 my-1">
                   <AnimatedDoughnut correct={correctCount} incorrect={incorrectCount} total={totalQuestions} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none mt-0.5">
-                    <span className="text-[8px] font-bold text-gray-400 leading-none">正答率</span>
+                    <span className="text-xs font-bold text-gray-400 leading-none">正答率</span>
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-tight">
                       {activeAnswered.length > 0 ? Math.round(accuracyRate) : 0}
-                      <span className="text-[8px] sm:text-[9px] font-bold">%</span>
+                      <span className="text-xs sm:text-xs font-bold">%</span>
                     </span>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1 w-full pt-2 border-t border-slate-50 text-[9px] sm:text-[10px] font-bold text-gray-500">
+                <div className="flex flex-col gap-1 w-full pt-2 border-t border-slate-50 text-xs sm:text-xs font-bold text-gray-500">
                   {/* 総演習回数ハイライト */}
                   <div className="flex justify-between items-center bg-teal-50/80 px-2 py-1 rounded-lg text-teal-900 border border-teal-100/60">
-                    <span className="text-[9px] sm:text-[10px] font-black text-teal-800">総演習数</span>
+                    <span className="text-xs sm:text-xs font-black text-teal-800">総演習数</span>
                     <span className="font-black text-xs sm:text-sm text-teal-700">
-                      {totalExercisesCount} <span className="text-[8px] font-normal text-teal-600">問</span>
+                      {totalExercisesCount} <span className="text-xs font-normal text-teal-600">問</span>
                     </span>
                   </div>
 
@@ -379,7 +379,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <span className="text-[#99a1af]">未解答</span>
                     <span className="text-[#99a1af] font-black text-xs sm:text-sm">{unattemptedCount}問</span>
                   </div>
-                  <div className="mt-1 pt-1 border-t border-dashed border-slate-200 flex justify-between items-center text-[8px] sm:text-[9px] text-gray-400 leading-tight">
+                  <div className="mt-1 pt-1 border-t border-dashed border-slate-200 flex justify-between items-center text-xs sm:text-xs text-gray-400 leading-tight">
                     <span>カバー率: <strong className="text-gray-600">{((activeAnswered.length / totalQuestions) * 100).toFixed(0)}%</strong></span>
                     <span>全 <strong className="text-gray-600">{totalQuestions}問</strong></span>
                   </div>
@@ -388,19 +388,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
               {/* Today's Stats Card */}
               <div className="bg-white p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-teal-50/50 shadow-xl flex flex-col items-center justify-center relative min-h-[190px] sm:min-h-[220px]">
-                <h4 className="font-bold text-gray-800 text-[10px] sm:text-[11px] mb-2 sm:mb-3 text-center">今日の達成度</h4>
+                <h4 className="font-bold text-gray-800 text-xs sm:text-xs mb-2 sm:mb-3 text-center">今日の達成度</h4>
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20">
                   <AnimatedDoughnut correct={todayStats.correct} incorrect={Math.max(0, todayStats.attempted - todayStats.correct)} total={10} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center mt-0.5">
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-none">
                       {todayStats.attempted}
-                      <span className="text-[8px] sm:text-[9px] font-bold">問</span>
+                      <span className="text-xs sm:text-xs font-bold">問</span>
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-3 flex flex-col gap-1 w-full pt-2.5 sm:pt-3 border-t border-slate-50 text-[9px] sm:text-[10px] font-bold text-gray-500">
+                <div className="mt-3 flex flex-col gap-1 w-full pt-2.5 sm:pt-3 border-t border-slate-50 text-xs sm:text-xs font-bold text-gray-500">
                   <div className="flex justify-between items-center">
                     <span className="text-[#1ec4b6]">正解</span>
                     <span className="text-[#1ec4b6] font-black text-xs sm:text-sm">{todayStats.correct}</span>
@@ -438,7 +438,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         </div>
                       </div>
                       <div className="font-black text-teal-600">
-                        {friend.points?.weekly || 0} <span className="text-[10px] font-normal">pt</span>
+                        {friend.points?.weekly || 0} <span className="text-xs font-normal">pt</span>
                       </div>
                     </div>
                   ))}
@@ -469,7 +469,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <Shuffle className="w-6 h-6" />
                     </div>
                     <span className="font-extrabold text-sm text-teal-900">ランダム5問</span>
-                    <span className="text-[10px] text-teal-600 leading-relaxed font-semibold">未解答や苦手から優先出題</span>
+                    <span className="text-xs text-teal-600 leading-relaxed font-semibold">未解答や苦手から優先出題</span>
                   </button>
 
                   <button
@@ -480,7 +480,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <Shuffle className="w-6 h-6" />
                     </div>
                     <span className="font-extrabold text-sm text-teal-900">ランダム10問</span>
-                    <span className="text-[10px] text-teal-600 leading-relaxed font-semibold">未解答や苦手から優先出題</span>
+                    <span className="text-xs text-teal-600 leading-relaxed font-semibold">未解答や苦手から優先出題</span>
                   </button>
 
                   <button
@@ -491,7 +491,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <BookOpen className="w-6 h-6" />
                     </div>
                     <span className="font-extrabold text-sm text-teal-900">過去問を解く</span>
-                    <span className="text-[10px] text-teal-600 leading-relaxed font-semibold">自治体・分野・年度ごとに解く</span>
+                    <span className="text-xs text-teal-600 leading-relaxed font-semibold">自治体・分野・年度ごとに解く</span>
                   </button>
 
                   <button
@@ -502,7 +502,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <Target className="w-6 h-6" />
                     </div>
                     <span className="font-extrabold text-sm text-orange-900">予想問題</span>
-                    <span className="text-[10px] text-orange-600 leading-relaxed font-semibold">出題予想される問題を解く</span>
+                    <span className="text-xs text-orange-600 leading-relaxed font-semibold">出題予想される問題を解く</span>
                   </button>
 
                   <button
@@ -513,7 +513,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <Sparkles className="w-6 h-6 animate-spin-slow" />
                     </div>
                     <span className="font-extrabold text-sm text-indigo-900">AI予想問題</span>
-                    <span className="text-[10px] text-indigo-600 leading-relaxed font-semibold">Geminiが作成した予想問題</span>
+                    <span className="text-xs text-indigo-600 leading-relaxed font-semibold">Geminiが作成した予想問題</span>
                   </button>
 
                   <button
@@ -524,7 +524,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <RotateCcw className="w-6 h-6" />
                     </div>
                     <span className="font-extrabold text-sm text-[#a7455e]">苦手克服</span>
-                    <span className="text-[10px] text-[#ff6f94] leading-relaxed font-semibold">間違えた問題をランダムに出題</span>
+                    <span className="text-xs text-[#ff6f94] leading-relaxed font-semibold">間違えた問題をランダムに出題</span>
                   </button>
 
                   <button
@@ -535,7 +535,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <ClipboardList className="w-6 h-6" />
                     </div>
                     <span className="font-extrabold text-sm text-amber-900">レポート</span>
-                    <span className="text-[10px] text-amber-600 leading-relaxed font-semibold">全体の成績分析と問題アーカイブ</span>
+                    <span className="text-xs text-amber-600 leading-relaxed font-semibold">全体の成績分析と問題アーカイブ</span>
                   </button>
 
                   <button
@@ -546,7 +546,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <FileText className="w-6 h-6" />
                     </div>
                     <span className="font-extrabold text-sm text-pink-900">自作問題 (PDF・画像)</span>
-                    <span className="text-[10px] text-pink-600 leading-relaxed font-semibold">資料や写真を読み込んで問題化</span>
+                    <span className="text-xs text-pink-600 leading-relaxed font-semibold">資料や写真を読み込んで問題化</span>
                   </button>
                 </div>
               </div>
@@ -567,7 +567,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               {/* Progress Circular Graph Card */}
               <div className="bg-white p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-teal-50/50 shadow-xl flex flex-col items-center justify-between relative min-h-[210px] sm:min-h-[235px]">
                 <div className="flex items-center justify-between w-full mb-1 sm:mb-2">
-                  <h4 className="font-bold text-gray-800 text-[11px] sm:text-[12px] flex items-center gap-1">
+                  <h4 className="font-bold text-gray-800 text-xs sm:text-xs flex items-center gap-1">
                     <span>総学習達成度</span>
                   </h4>
                   {onRefreshHistory && (
@@ -575,7 +575,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       onClick={onRefreshHistory}
                       disabled={isSyncingHistory}
                       title="クラウドの解答履歴を再読み込み"
-                      className="p-1 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1 text-[9px] font-bold"
+                      className="p-1 text-teal-600 hover:text-teal-800 hover:bg-teal-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50 flex items-center gap-1 text-xs font-bold"
                     >
                       <RefreshCw className={`w-3 h-3 ${isSyncingHistory ? 'animate-spin' : ''}`} />
                       <span className="hidden sm:inline">再同期</span>
@@ -586,20 +586,20 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 my-1">
                   <AnimatedDoughnut correct={correctCount} incorrect={incorrectCount} total={totalQuestions} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none mt-0.5">
-                    <span className="text-[8px] font-bold text-gray-400 leading-none">正答率</span>
+                    <span className="text-xs font-bold text-gray-400 leading-none">正答率</span>
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-tight">
                       {activeAnswered.length > 0 ? Math.round(accuracyRate) : 0}
-                      <span className="text-[8px] sm:text-[9px] font-bold">%</span>
+                      <span className="text-xs sm:text-xs font-bold">%</span>
                     </span>
                   </div>
                 </div>
 
-                <div className="flex flex-col gap-1 w-full pt-2 border-t border-slate-50 text-[9px] sm:text-[10px] font-bold text-gray-500">
+                <div className="flex flex-col gap-1 w-full pt-2 border-t border-slate-50 text-xs sm:text-xs font-bold text-gray-500">
                   {/* 総演習回数ハイライト */}
                   <div className="flex justify-between items-center bg-teal-50/80 px-2 py-1 rounded-lg text-teal-900 border border-teal-100/60">
-                    <span className="text-[9px] sm:text-[10px] font-black text-teal-800">総演習数</span>
+                    <span className="text-xs sm:text-xs font-black text-teal-800">総演習数</span>
                     <span className="font-black text-xs sm:text-sm text-teal-700">
-                      {totalExercisesCount} <span className="text-[8px] font-normal text-teal-600">問</span>
+                      {totalExercisesCount} <span className="text-xs font-normal text-teal-600">問</span>
                     </span>
                   </div>
 
@@ -615,7 +615,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <span className="text-[#99a1af]">未解答</span>
                     <span className="text-[#99a1af] font-black text-xs sm:text-sm">{unattemptedCount}問</span>
                   </div>
-                  <div className="mt-1 pt-1 border-t border-dashed border-slate-200 flex justify-between items-center text-[8px] sm:text-[9px] text-gray-400 leading-tight">
+                  <div className="mt-1 pt-1 border-t border-dashed border-slate-200 flex justify-between items-center text-xs sm:text-xs text-gray-400 leading-tight">
                     <span>カバー率: <strong className="text-gray-600">{((activeAnswered.length / totalQuestions) * 100).toFixed(0)}%</strong></span>
                     <span>全 <strong className="text-gray-600">{totalQuestions}問</strong></span>
                   </div>
@@ -624,19 +624,19 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
               {/* Today's Stats Card */}
               <div className="bg-white p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-teal-50/50 shadow-xl flex flex-col items-center justify-center relative min-h-[190px] sm:min-h-[220px]">
-                <h4 className="font-bold text-gray-800 text-[10px] sm:text-[11px] mb-2 sm:mb-3 text-center">今日の達成度</h4>
+                <h4 className="font-bold text-gray-800 text-xs sm:text-xs mb-2 sm:mb-3 text-center">今日の達成度</h4>
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20">
                   <AnimatedDoughnut correct={todayStats.correct} incorrect={Math.max(0, todayStats.attempted - todayStats.correct)} total={10} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center mt-0.5">
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-none">
                       {todayStats.attempted}
-                      <span className="text-[8px] sm:text-[9px] font-bold">問</span>
+                      <span className="text-xs sm:text-xs font-bold">問</span>
                     </span>
                   </div>
                 </div>
 
-                <div className="mt-3 flex flex-col gap-1 w-full pt-2.5 sm:pt-3 border-t border-slate-50 text-[9px] sm:text-[10px] font-bold text-gray-500">
+                <div className="mt-3 flex flex-col gap-1 w-full pt-2.5 sm:pt-3 border-t border-slate-50 text-xs sm:text-xs font-bold text-gray-500">
                   <div className="flex justify-between items-center">
                     <span className="text-[#1ec4b6]">正解</span>
                     <span className="text-[#1ec4b6] font-black text-xs sm:text-sm">{todayStats.correct}</span>
@@ -656,7 +656,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
             {/* AI Advice Center - Heartful integration */}
             <div className="bg-white p-6 rounded-3xl border border-teal-50/50 shadow-xl space-y-4">
               <div className="flex items-center gap-2">
-                <div className="p-1.5 bg-gradient-to-r from-teal-500 to-emerald-500 text-white rounded-lg">
+                <div className="p-1.5 bg-gradient-to-r from-teal-500 to-teal-500 text-white rounded-lg">
                   <Sparkles className="w-4 h-4" />
                 </div>
                 <h4 className="font-bold text-gray-800 text-sm">AI分析</h4>
@@ -668,7 +668,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <button
                 onClick={onTriggerAdvice}
                 disabled={adviceLoading}
-                className="w-full py-4 bg-gradient-to-r from-teal-500 to-emerald-500 hover:from-teal-600 hover:to-emerald-600 text-white font-extrabold rounded-2xl shadow-md shadow-teal-500/10 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 text-sm"
+                className="w-full py-4 bg-gradient-to-r from-teal-500 to-teal-500 hover:from-teal-600 hover:to-teal-600 text-white font-extrabold rounded-2xl shadow-md shadow-teal-500/10 flex items-center justify-center gap-2 transition-all cursor-pointer disabled:opacity-50 text-sm"
               >
                 {adviceLoading ? (
                   <>
@@ -690,16 +690,16 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     initial={{ opacity: 0, height: 0 }}
                     animate={{ opacity: 1, height: 'auto' }}
                     exit={{ opacity: 0, height: 0 }}
-                    className="mt-4 bg-emerald-50/30 border border-emerald-100 rounded-2xl p-5 relative overflow-hidden"
+                    className="mt-4 bg-teal-50/30 border border-teal-100 rounded-2xl p-5 relative overflow-hidden"
                   >
                     {/* Decorative Watermark */}
-                    <div className="absolute right-4 bottom-4 text-emerald-100 opacity-20 pointer-events-none">
+                    <div className="absolute right-4 bottom-4 text-teal-100 opacity-20 pointer-events-none">
                       <GraduationCap className="w-24 h-24" />
                     </div>
                     
-                    <div className="flex items-center gap-2 border-b border-emerald-100 pb-3 mb-3">
-                      <Award className="w-5 h-5 text-emerald-600" />
-                      <span className="font-bold text-xs text-emerald-800 uppercase tracking-widest">
+                    <div className="flex items-center gap-2 border-b border-teal-100 pb-3 mb-3">
+                      <Award className="w-5 h-5 text-teal-600" />
+                      <span className="font-bold text-xs text-teal-800 uppercase tracking-widest">
                         AIアドバイザー からのアドバイス
                       </span>
                     </div>
@@ -723,7 +723,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="flex bg-slate-100 p-1 rounded-xl self-start sm:self-auto border border-slate-200/50">
                   <button
                     onClick={() => setAnalysisType('past')}
-                    className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                    className={`px-3 py-1.5 text-xs font-black rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
                       analysisType === 'past'
                         ? 'bg-white text-teal-800 shadow-sm'
                         : 'text-gray-500 hover:text-gray-800'
@@ -734,7 +734,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </button>
                   <button
                     onClick={() => setAnalysisType('expected')}
-                    className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                    className={`px-3 py-1.5 text-xs font-black rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
                       analysisType === 'expected'
                         ? 'bg-white text-teal-800 shadow-sm'
                         : 'text-gray-500 hover:text-gray-800'
@@ -745,7 +745,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </button>
                   <button
                     onClick={() => setAnalysisType('ai')}
-                    className={`px-3 py-1.5 text-[10px] font-black rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
+                    className={`px-3 py-1.5 text-xs font-black rounded-lg transition-all flex items-center gap-1 cursor-pointer ${
                       analysisType === 'ai'
                         ? 'bg-white text-teal-800 shadow-sm'
                         : 'text-gray-500 hover:text-gray-800'
@@ -758,7 +758,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               {/* Stacked Progress Bar Legend */}
-              <div className="flex items-center gap-4 text-[9px] font-bold text-gray-500 bg-slate-50/50 p-2 rounded-xl">
+              <div className="flex items-center gap-4 text-xs font-bold text-gray-500 bg-slate-50/50 p-2 rounded-xl">
                 <div className="flex items-center gap-1">
                   <span className="w-2.5 h-2.5 rounded bg-[#1ec4b6] inline-block" />
                   <span>正解</span>
@@ -780,7 +780,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <div>
                         <Sparkles className="w-8 h-8 text-amber-300 mx-auto mb-2 animate-pulse" />
                         <p>AI予想問題の履歴がありません。</p>
-                        <p className="text-[10px] text-gray-400 mt-1">「学んで鍛える」タブからAI問題に挑戦してみましょう！</p>
+                        <p className="text-xs text-gray-400 mt-1">「学んで鍛える」タブからAI問題に挑戦してみましょう！</p>
                       </div>
                     ) : (
                       <p>該当する問題データがありません。</p>
@@ -794,7 +794,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
 
                     return (
                       <div key={stat.name} className="space-y-2">
-                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 text-[11px]">
+                        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 text-xs">
                           <span className="font-black text-slate-800">{stat.name}</span>
                           <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5 text-gray-400 font-bold">
                             <span className="text-[#1ec4b6]">正解: {stat.correct}問</span>
@@ -804,7 +804,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                             <span className="text-slate-400">未解答: {stat.unattempted}問</span>
                             <span className="text-gray-300">/</span>
                             <span className="text-slate-600 font-black">合計: {stat.total}問</span>
-                            <span className="ml-1 text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded text-[9px] font-mono">
+                            <span className="ml-1 text-slate-700 bg-slate-100 px-1.5 py-0.5 rounded text-xs font-mono">
                               正答率: {stat.accuracy}%
                             </span>
                           </div>
@@ -855,7 +855,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   <span className="text-gray-400 font-medium text-xs">(全{typeFilteredQuestions.length}問)</span>
                 </h4>
                 <div className="flex items-center gap-2">
-                  <span className="text-[11px] font-bold text-gray-500">未解答を表示</span>
+                  <span className="text-xs font-bold text-gray-500">未解答を表示</span>
                   <button 
                     onClick={() => setShowUnattempted(!showUnattempted)}
                     className={`w-9 h-5 rounded-full relative transition-colors cursor-pointer ${showUnattempted ? 'bg-teal-500' : 'bg-slate-300'}`}
@@ -900,7 +900,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
               
               {/* Question Grid Legend */}
-              <div className="flex justify-center items-center gap-6 text-[10px] font-bold text-gray-500 pt-2 border-t border-slate-50">
+              <div className="flex justify-center items-center gap-6 text-xs font-bold text-gray-500 pt-2 border-t border-slate-50">
                 <div className="flex items-center gap-1.5">
                   <span className="w-3 h-3 rounded-full bg-slate-50 border border-slate-200 inline-block shadow-sm" />
                   <span>未解答</span>
@@ -942,7 +942,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               {/* Day-of-week headers */}
-              <div className="grid grid-cols-7 text-center text-[10px] font-black text-gray-400 pb-1">
+              <div className="grid grid-cols-7 text-center text-xs font-black text-gray-400 pb-1">
                 {['日', '月', '火', '水', '木', '金', '土'].map((d, i) => (
                   <div key={d} className={i === 0 ? 'text-rose-400' : i === 6 ? 'text-blue-400' : ''}>{d}</div>
                 ))}
@@ -983,11 +983,11 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     cells.push(
                       <div
                         key={key}
-                        className={`aspect-square flex flex-col items-center justify-center rounded-lg text-[10px] font-bold transition-transform hover:scale-110 cursor-default relative ${bgClass} ${isToday ? 'ring-2 ring-amber-400 ring-offset-1' : ''}`}
+                        className={`aspect-square flex flex-col items-center justify-center rounded-lg text-xs font-bold transition-transform hover:scale-110 cursor-default relative ${bgClass} ${isToday ? 'ring-2 ring-amber-400 ring-offset-1' : ''}`}
                         title={count > 0 ? `${month + 1}/${day}: ${count}問解答` : `${month + 1}/${day}`}
                       >
                         <span>{day}</span>
-                        {count > 0 && <span className="text-[8px] font-black leading-none opacity-80">{count}</span>}
+                        {count > 0 && <span className="text-xs font-black leading-none opacity-80">{count}</span>}
                       </div>
                     );
                   }
@@ -996,7 +996,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
 
               {/* Legend */}
-              <div className="flex items-center justify-between text-[10px] font-bold text-gray-400 pt-1 border-t border-slate-50">
+              <div className="flex items-center justify-between text-xs font-bold text-gray-400 pt-1 border-t border-slate-50">
                 <span>少ない</span>
                 <div className="flex items-center gap-1">
                   <div className="w-4 h-4 rounded bg-slate-50 border border-slate-100" />
@@ -1031,15 +1031,15 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 return (
                   <div className="grid grid-cols-3 gap-2 pt-3 border-t border-slate-100">
                     <div className="bg-teal-50 rounded-xl p-3 text-center">
-                      <p className="text-[9px] font-bold text-teal-600 mb-1">今月の学習日数</p>
+                      <p className="text-xs font-bold text-teal-600 mb-1">今月の学習日数</p>
                       <p className="text-xl font-black text-teal-700">{studyDaysThisMonth}<span className="text-xs font-bold ml-0.5">日</span></p>
                     </div>
-                    <div className="bg-emerald-50 rounded-xl p-3 text-center">
-                      <p className="text-[9px] font-bold text-emerald-600 mb-1">今月の総解答数</p>
-                      <p className="text-xl font-black text-emerald-700">{totalAnswersThisMonth}<span className="text-xs font-bold ml-0.5">問</span></p>
+                    <div className="bg-teal-50 rounded-xl p-3 text-center">
+                      <p className="text-xs font-bold text-teal-600 mb-1">今月の総解答数</p>
+                      <p className="text-xl font-black text-teal-700">{totalAnswersThisMonth}<span className="text-xs font-bold ml-0.5">問</span></p>
                     </div>
                     <div className={`rounded-xl p-3 text-center ${streak >= 3 ? 'bg-amber-50' : 'bg-slate-50'}`}>
-                      <p className={`text-[9px] font-bold mb-1 ${streak >= 3 ? 'text-amber-600' : 'text-gray-400'}`}>連続学習</p>
+                      <p className={`text-xs font-bold mb-1 ${streak >= 3 ? 'text-amber-600' : 'text-gray-400'}`}>連続学習</p>
                       <p className={`text-xl font-black ${streak >= 3 ? 'text-amber-600' : 'text-gray-400'}`}>
                         {streak >= 3 ? '🔥' : ''}{streak}<span className="text-xs font-bold ml-0.5">日</span>
                       </p>

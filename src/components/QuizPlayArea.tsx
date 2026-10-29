@@ -438,14 +438,14 @@ const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
           {/* Results dashboard metrics */}
           <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto pt-4 relative z-10">
             <div className="bg-slate-50 p-4 rounded-2xl border border-teal-50/20">
-              <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider mb-1">正解率</span>
+              <span className="text-xs font-bold text-gray-400 block uppercase tracking-wider mb-1">正解率</span>
               <span className="text-3xl font-black text-teal-600 font-mono">
                 {scoreRate.toFixed(1)}
                 <span className="text-xs font-bold">%</span>
               </span>
             </div>
             <div className="bg-slate-50 p-4 rounded-2xl border border-teal-50/20">
-              <span className="text-[10px] font-bold text-gray-400 block uppercase tracking-wider mb-1">正解数</span>
+              <span className="text-xs font-bold text-gray-400 block uppercase tracking-wider mb-1">正解数</span>
               <span className="text-3xl font-black text-teal-700 font-mono">
                 {correctCount} <span className="text-xs text-teal-600 font-bold">/ {totalSteps}問</span>
               </span>
@@ -481,7 +481,7 @@ const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
             <Clock className="w-4 h-4 text-teal-500 shrink-0" />
             第 <span className="font-mono text-base font-black text-teal-600">{activeQuestionNumber}</span> 問 / 全 {totalSteps} 問
           </span>
-          <span className={`py-1 px-2.5 rounded-full text-[10px] font-black ${
+          <span className={`py-1 px-2.5 rounded-full text-xs font-black ${
             activeQuestionNumber === totalSteps
               ? 'bg-amber-100 text-amber-700'
               : 'bg-teal-50 text-teal-600'
@@ -504,7 +504,7 @@ const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
 
         {/* Meta tags + bookmark */}
         <div className="flex items-start gap-2 pb-4 border-b border-gray-100">
-          <div className="flex flex-wrap items-center gap-1.5 flex-1 text-[10px] font-extrabold uppercase tracking-wider text-teal-600">
+          <div className="flex flex-wrap items-center gap-1.5 flex-1 text-xs font-extrabold uppercase tracking-wider text-teal-600">
             <BookOpen className="w-3.5 h-3.5 text-teal-500" />
             <span>出題元: {currentGroup.year} {currentGroup.prefecture}</span>
             <span className="text-gray-300">|</span>
@@ -662,7 +662,7 @@ const QuizPlayAreaInner: React.FC<QuizPlayAreaProps> = ({
               </motion.div>
               {/* 大問全体の最後のステップが完了した場合のみ、または全体共通の解説を表示 */}
               <div className="p-5 bg-slate-50 border border-slate-100 rounded-2xl space-y-2">
-                <span className="text-[10px] font-extrabold text-teal-700 tracking-wider flex items-center gap-1">
+                <span className="text-xs font-extrabold text-teal-700 tracking-wider flex items-center gap-1">
                   <Activity className="w-3.5 h-3.5 text-teal-500" />
                   解説・根拠
                 </span>

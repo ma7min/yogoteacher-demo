@@ -314,7 +314,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                 </h4>
               </div>
               {selectedPrefs.length > 0 && (
-                <span className="bg-white/20 text-white text-[11px] font-bold px-2.5 py-1 rounded-full">
+                <span className="bg-white/20 text-white text-xs font-bold px-2.5 py-1 rounded-full">
                   {selectedPrefs.length}件選択中
                 </span>
               )}
@@ -324,25 +324,25 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
               <div className="flex flex-wrap gap-2">
                 <button
                   onClick={handleSelectAllPrefs}
-                  className="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-lg font-bold text-[11px] flex items-center gap-1 transition-colors"
+                  className="px-3 py-1.5 bg-teal-50 hover:bg-teal-100 text-teal-700 border border-teal-200 rounded-lg font-bold text-xs flex items-center gap-1 transition-colors"
                 >
                   <CheckSquare className="w-3.5 h-3.5" />すべて選択
                 </button>
                 <button
                   onClick={handleClearAllPrefs}
-                  className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg font-bold text-[11px] flex items-center gap-1 transition-colors"
+                  className="px-3 py-1.5 bg-slate-50 hover:bg-slate-100 text-slate-600 border border-slate-200 rounded-lg font-bold text-xs flex items-center gap-1 transition-colors"
                 >
                   <Square className="w-3.5 h-3.5" />すべて解除
                 </button>
                 <button
                   onClick={handleSaveFavoritePrefs}
-                  className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg font-bold text-[11px] flex items-center gap-1 transition-colors"
+                  className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg font-bold text-xs flex items-center gap-1 transition-colors"
                 >
                   <Save className="w-3.5 h-3.5" />お気に入り保存
                 </button>
                 <button
                   onClick={handleLoadFavoritePrefs}
-                  className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg font-bold text-[11px] flex items-center gap-1 transition-colors"
+                  className="px-3 py-1.5 bg-amber-50 hover:bg-amber-100 text-amber-700 border border-amber-200 rounded-lg font-bold text-xs flex items-center gap-1 transition-colors"
                 >
                   <Download className="w-3.5 h-3.5" />お気に入り呼出
                 </button>
@@ -364,12 +364,12 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                           <span className={`w-2 h-2 rounded-full shrink-0 ${regionPrefsCount > 0 ? 'bg-teal-500' : 'bg-slate-300'}`} />
                           <span className={`text-xs font-bold ${regionPrefsCount > 0 ? 'text-teal-800' : 'text-slate-700'}`}>{region}</span>
                           {regionPrefsCount > 0 && (
-                            <span className="bg-teal-500 text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full">
+                            <span className="bg-teal-500 text-white text-xs font-bold px-1.5 py-0.5 rounded-full">
                               {regionPrefsCount}
                             </span>
                           )}
                         </span>
-                        <span className="text-[10px] text-slate-400">{isOpen ? '▲' : '▼'}</span>
+                        <span className="text-xs text-slate-400">{isOpen ? '▲' : '▼'}</span>
                       </button>
                       {isOpen && (
                         <motion.div
@@ -413,7 +413,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                   出題分野を選択
                 </h4>
               </div>
-              <label className="flex items-center gap-1.5 text-[11px] text-white/90 font-bold cursor-pointer select-none">
+              <label className="flex items-center gap-1.5 text-xs text-white/90 font-bold cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={selectedFields.length === availableFields.length}
@@ -457,7 +457,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                   出題年度を選択
                 </h4>
               </div>
-              <label className="flex items-center gap-1.5 text-[11px] text-white/90 font-bold cursor-pointer select-none">
+              <label className="flex items-center gap-1.5 text-xs text-white/90 font-bold cursor-pointer select-none">
                 <input
                   type="checkbox"
                   checked={selectedYears.length === availableYears.length}
@@ -524,7 +524,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                   <BookOpen className="w-4 h-4 text-orange-600" />
                   出題分野を選択
                 </h4>
-                <p className="text-[11px] text-gray-400 mt-0.5">
+                <p className="text-xs text-gray-400 mt-0.5">
                   学校保健安全法、施行令、施行規則などの法令単位で絞り込みが可能です
                 </p>
               </div>
@@ -572,7 +572,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                       </div>
                       <span className="text-xs font-bold truncate">{field}</span>
                     </div>
-                    <span className={`text-[11px] font-mono px-2 py-0.5 rounded-full shrink-0 font-bold ${
+                    <span className={`text-xs font-mono px-2 py-0.5 rounded-full shrink-0 font-bold ${
                       isSelected ? 'bg-orange-200 text-orange-900' : 'bg-gray-100 text-gray-500'
                     }`}>
                       {fieldFilteredCount}問
@@ -590,7 +590,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                 <Layers className="w-4 h-4 text-orange-600" />
                 出題形式（難易度）を選択
               </h4>
-              <p className="text-[11px] text-gray-400 mt-0.5">
+              <p className="text-xs text-gray-400 mt-0.5">
                 学習の進度に合わせて、1問1空欄の「基礎」か、条文丸ごと制覇する「応用・発展」を選択できます
               </p>
             </div>
@@ -614,13 +614,13 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                       <span className="font-black text-sm flex items-center gap-1.5">
                         <span className="text-base">🌟</span> すべて
                       </span>
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                      <span className={`text-xs font-mono px-2 py-0.5 rounded-full font-bold ${
                         isSelected ? 'bg-orange-200 text-orange-900' : 'bg-gray-100 text-gray-500'
                       }`}>
                         {count}問
                       </span>
                     </div>
-                    <p className="text-[11px] leading-relaxed text-gray-500">
+                    <p className="text-xs leading-relaxed text-gray-500">
                       基礎問題と応用・発展問題の両方を網羅的に総合演習
                     </p>
                   </button>
@@ -637,7 +637,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                     onClick={() => setExpectedType('basic')}
                     className={`p-4 rounded-2xl border text-left transition-all cursor-pointer select-none flex flex-col justify-between relative ${
                       isSelected
-                        ? 'bg-gradient-to-br from-emerald-50 to-teal-50 border-emerald-500 text-emerald-950 shadow-md ring-2 ring-emerald-400/40'
+                        ? 'bg-gradient-to-br from-teal-50 to-teal-50 border-teal-500 text-teal-950 shadow-md ring-2 ring-emerald-400/40'
                         : 'bg-white border-slate-200 text-gray-600 hover:border-slate-300 hover:bg-slate-50/60'
                     }`}
                   >
@@ -645,13 +645,13 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                       <span className="font-black text-sm flex items-center gap-1.5">
                         <span className="text-base">🟢</span> 基礎問題
                       </span>
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
-                        isSelected ? 'bg-emerald-200 text-emerald-900' : 'bg-gray-100 text-gray-500'
+                      <span className={`text-xs font-mono px-2 py-0.5 rounded-full font-bold ${
+                        isSelected ? 'bg-teal-200 text-teal-900' : 'bg-gray-100 text-gray-500'
                       }`}>
                         {count}問
                       </span>
                     </div>
-                    <p className="text-[11px] leading-relaxed text-gray-500">
+                    <p className="text-xs leading-relaxed text-gray-500">
                       1問につき1つの空欄に集中して重要語句を総チェック
                     </p>
                   </button>
@@ -676,13 +676,13 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                       <span className="font-black text-sm flex items-center gap-1.5">
                         <span className="text-base">🟣</span> 応用・発展問題
                       </span>
-                      <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full font-bold ${
+                      <span className={`text-xs font-mono px-2 py-0.5 rounded-full font-bold ${
                         isSelected ? 'bg-purple-200 text-purple-900' : 'bg-gray-100 text-gray-500'
                       }`}>
                         {count}問
                       </span>
                     </div>
-                    <p className="text-[11px] leading-relaxed text-gray-500">
+                    <p className="text-xs leading-relaxed text-gray-500">
                       条文全体の空欄を連続して解き進める実践形式
                     </p>
                   </button>
@@ -730,12 +730,12 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
               onClick={() => setAiDifficulty('1')}
               className={`py-3 px-1 rounded-xl border-2 font-bold transition-all text-xs cursor-pointer text-center ${
                 aiDifficulty === '1'
-                  ? 'bg-emerald-50 border-emerald-400 text-emerald-800 ring-2 ring-emerald-400/10 scale-[1.02]'
+                  ? 'bg-teal-50 border-teal-400 text-teal-800 ring-2 ring-emerald-400/10 scale-[1.02]'
                   : 'bg-white border-slate-200 text-gray-600 hover:border-slate-300'
               }`}
             >
               🐣 Lv.1
-              <div className="text-[9px] text-gray-500 font-normal mt-0.5 whitespace-nowrap">初級 (基礎確認)</div>
+              <div className="text-xs text-gray-500 font-normal mt-0.5 whitespace-nowrap">初級 (基礎確認)</div>
             </button>
             <button
               onClick={() => setAiDifficulty('2')}
@@ -746,7 +746,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
               }`}
             >
               🌱 Lv.2
-              <div className="text-[9px] text-gray-500 font-normal mt-0.5 whitespace-nowrap">初中級 (重要単語)</div>
+              <div className="text-xs text-gray-500 font-normal mt-0.5 whitespace-nowrap">初中級 (重要単語)</div>
             </button>
             <button
               onClick={() => setAiDifficulty('3')}
@@ -757,7 +757,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
               }`}
             >
               ⚔️ Lv.3
-              <div className="text-[9px] text-gray-500 font-normal mt-0.5 whitespace-nowrap">中級 (標準・頻出)</div>
+              <div className="text-xs text-gray-500 font-normal mt-0.5 whitespace-nowrap">中級 (標準・頻出)</div>
             </button>
             <button
               onClick={() => setAiDifficulty('4')}
@@ -768,7 +768,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
               }`}
             >
               🛡️ Lv.4
-              <div className="text-[9px] text-gray-500 font-normal mt-0.5 whitespace-nowrap">中上級 (応用・発展)</div>
+              <div className="text-xs text-gray-500 font-normal mt-0.5 whitespace-nowrap">中上級 (応用・発展)</div>
             </button>
             <button
               onClick={() => setAiDifficulty('5')}
@@ -779,7 +779,7 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
               }`}
             >
               🔥 Lv.5
-              <div className="text-[9px] text-gray-500 font-normal mt-0.5 whitespace-nowrap">上級 (最難関合格)</div>
+              <div className="text-xs text-gray-500 font-normal mt-0.5 whitespace-nowrap">上級 (最難関合格)</div>
             </button>
           </div>
 
@@ -819,9 +819,9 @@ export const SelectionScreen: React.FC<SelectionScreenProps> = ({
                 >
                   <div className="flex flex-col overflow-hidden">
                     <span className="text-xs font-bold text-gray-800 truncate">{q.field} - {q.prefecture}</span>
-                    <span className="text-[10px] text-gray-500 truncate mt-0.5">{q.question.substring(0, 30)}...</span>
+                    <span className="text-xs text-gray-500 truncate mt-0.5">{q.question.substring(0, 30)}...</span>
                   </div>
-                  <div className="text-[10px] bg-slate-100 text-slate-500 px-2 py-1 rounded-md whitespace-nowrap ml-2">
+                  <div className="text-xs bg-slate-100 text-slate-500 px-2 py-1 rounded-md whitespace-nowrap ml-2">
                     Lv.{q.difficulty}
                   </div>
                 </button>
