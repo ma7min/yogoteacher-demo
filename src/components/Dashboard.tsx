@@ -1,15 +1,80 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { BookOpen, Sparkles, RotateCcw, AlertCircle, HelpCircle, GraduationCap, ChevronRight, CheckCircle2, Award, ClipboardList, Target, FileText, Shuffle, RefreshCw } from 'lucide-react';
 import { MainMode, Question } from '../types';
 
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
 import { ExamCountdown } from './ExamCountdown';
 import { db } from '../lib/firebase';
 import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+// カスタムSVGドーナツチャート（グレー背景固定、色付き部分がアニメーション）
+function AnimatedDoughnut({ correct, incorrect, total, animKey }: { correct: number; incorrect: number; total: number; animKey: string | number }) {
+  const size = 80;
+  const strokeWidth = 10;
+  const r = (size - strokeWidth) / 2;
+  const circ = 2 * Math.PI * r;
+  const cx = size / 2;
+  const cy = size / 2;
+
+  const pctCorrect = total > 0 ? correct / total : 0;
+  const pctIncorrect = total > 0 ? incorrect / total : 0;
+
+  const [progress, setProgress] = useState(0);
+  const rafRef = useRef<number | null>(null);
+  const startRef = useRef<number | null>(null);
+  const duration = 900;
+
+  useEffect(() => {
+    setProgress(0);
+    startRef.current = null;
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    const animate = (ts: number) => {
+      if (!startRef.current) startRef.current = ts;
+      const elapsed = ts - startRef.current;
+      const t = Math.min(elapsed / duration, 1);
+      // easeInOutQuart
+      const eased = t < 0.5 ? 8 * t * t * t * t : 1 - Math.pow(-2 * t + 2, 4) / 2;
+      setProgress(eased);
+      if (t < 1) rafRef.current = requestAnimationFrame(animate);
+    };
+    rafRef.current = requestAnimationFrame(animate);
+    return () => { if (rafRef.current) cancelAnimationFrame(rafRef.current); };
+  }, [animKey]);
+
+  const correctLen = pctCorrect * circ * progress;
+  const incorrectLen = pctIncorrect * circ * progress;
+  // 正解セグメント: 12時から時計回り
+  const incorrectOffset = circ - correctLen;
+  // 不正解セグメント: 正解の直後から
+  const incorrectStart = pctCorrect * circ * progress;
+
+  return (
+    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+      {/* グレー背景（常時表示） */}
+      <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={strokeWidth} />
+      {/* 不正解（ピンク）: 正解の後ろに配置 */}
+      {incorrectLen > 0 && (
+        <circle
+          cx={cx} cy={cy} r={r} fill="none"
+          stroke="#ff6f94" strokeWidth={strokeWidth}
+          strokeDasharray={`${incorrectLen} ${circ - incorrectLen}`}
+          strokeDashoffset={circ - incorrectStart}
+          strokeLinecap="butt"
+        />
+      )}
+      {/* 正解（ティール）: 先頭から */}
+      {correctLen > 0 && (
+        <circle
+          cx={cx} cy={cy} r={r} fill="none"
+          stroke="#1ec4b6" strokeWidth={strokeWidth}
+          strokeDasharray={`${correctLen} ${circ - correctLen}`}
+          strokeDashoffset={0}
+          strokeLinecap="butt"
+        />
+      )}
+    </svg>
+  );
+}
 
 
 interface DashboardProps {
@@ -283,27 +348,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 my-1">
-                  {/* SVG Progress Circle */}
-                  <Doughnut key={activeTab} 
-                    data={{
-                      labels: ['正解', '不正解', '未解答'],
-                      datasets: [{
-                        data: [correctCount, incorrectCount, unattemptedCount],
-                        backgroundColor: ['#1ec4b6', '#ff6f94', '#e2e8f0'],
-                        borderWidth: 0,
-                      }]
-                    }}
-                    options={{
-                      cutout: '75%',
-                      plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                      },
-                      animation: { animateScale: true, animateRotate: true, duration: 900, easing: "easeInOutQuart" }
-                    }}
-                  />
-                  
-                  {/* Accurate Percent Texts (正答率) */}
+                  <AnimatedDoughnut correct={correctCount} incorrect={incorrectCount} total={totalQuestions} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none mt-0.5">
                     <span className="text-[8px] font-bold text-gray-400 leading-none">正答率</span>
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-tight">
@@ -346,27 +391,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <h4 className="font-bold text-gray-800 text-[10px] sm:text-[11px] mb-2 sm:mb-3 text-center">今日の達成度</h4>
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20">
-                  {/* SVG Progress Circle */}
-                  <Doughnut key={activeTab} 
-                    data={{
-                      labels: ['正解', '不正解', '未解答 (目標まで)'],
-                      datasets: [{
-                        data: [todayStats.correct, Math.max(0, todayStats.attempted - todayStats.correct), Math.max(0, 10 - todayStats.attempted)],
-                        backgroundColor: ['#1ec4b6', '#ff6f94', '#e2e8f0'],
-                        borderWidth: 0,
-                      }]
-                    }}
-                    options={{
-                      cutout: '75%',
-                      plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                      },
-                      animation: { animateScale: true, animateRotate: true, duration: 900, easing: "easeInOutQuart" }
-                    }}
-                  />
-                  
-                  {/* Accurate Percent Texts */}
+                  <AnimatedDoughnut correct={todayStats.correct} incorrect={Math.max(0, todayStats.attempted - todayStats.correct)} total={10} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center mt-0.5">
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-none">
                       {todayStats.attempted}
@@ -559,27 +584,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 </div>
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 my-1">
-                  {/* SVG Progress Circle */}
-                  <Doughnut key={activeTab} 
-                    data={{
-                      labels: ['正解', '不正解', '未解答'],
-                      datasets: [{
-                        data: [correctCount, incorrectCount, unattemptedCount],
-                        backgroundColor: ['#1ec4b6', '#ff6f94', '#e2e8f0'],
-                        borderWidth: 0,
-                      }]
-                    }}
-                    options={{
-                      cutout: '75%',
-                      plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                      },
-                      animation: { animateScale: true, animateRotate: true, duration: 900, easing: "easeInOutQuart" }
-                    }}
-                  />
-                  
-                  {/* Accurate Percent Texts (正答率) */}
+                  <AnimatedDoughnut correct={correctCount} incorrect={incorrectCount} total={totalQuestions} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none mt-0.5">
                     <span className="text-[8px] font-bold text-gray-400 leading-none">正答率</span>
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-tight">
@@ -622,27 +627,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <h4 className="font-bold text-gray-800 text-[10px] sm:text-[11px] mb-2 sm:mb-3 text-center">今日の達成度</h4>
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20">
-                  {/* SVG Progress Circle */}
-                  <Doughnut key={activeTab} 
-                    data={{
-                      labels: ['正解', '不正解', '未解答 (目標まで)'],
-                      datasets: [{
-                        data: [todayStats.correct, Math.max(0, todayStats.attempted - todayStats.correct), Math.max(0, 10 - todayStats.attempted)],
-                        backgroundColor: ['#1ec4b6', '#ff6f94', '#e2e8f0'],
-                        borderWidth: 0,
-                      }]
-                    }}
-                    options={{
-                      cutout: '75%',
-                      plugins: {
-                        legend: { display: false },
-                        tooltip: { enabled: false }
-                      },
-                      animation: { animateScale: true, animateRotate: true, duration: 900, easing: "easeInOutQuart" }
-                    }}
-                  />
-                  
-                  {/* Accurate Percent Texts */}
+                  <AnimatedDoughnut correct={todayStats.correct} incorrect={Math.max(0, todayStats.attempted - todayStats.correct)} total={10} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center mt-0.5">
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-none">
                       {todayStats.attempted}
