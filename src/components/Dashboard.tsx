@@ -284,7 +284,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 my-1">
                   {/* SVG Progress Circle */}
-                  <Doughnut 
+                  <Doughnut key={activeTab} 
                     data={{
                       labels: ['正解', '不正解', '未解答'],
                       datasets: [{
@@ -299,7 +299,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         legend: { display: false },
                         tooltip: { enabled: false }
                       },
-                      animation: { animateScale: true, animateRotate: true }
+                      animation: { animateScale: true, animateRotate: true, duration: 900, easing: "easeInOutQuart" }
                     }}
                   />
                   
@@ -347,7 +347,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20">
                   {/* SVG Progress Circle */}
-                  <Doughnut 
+                  <Doughnut key={activeTab} 
                     data={{
                       labels: ['正解', '不正解', '未解答 (目標まで)'],
                       datasets: [{
@@ -362,7 +362,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         legend: { display: false },
                         tooltip: { enabled: false }
                       },
-                      animation: { animateScale: true, animateRotate: true }
+                      animation: { animateScale: true, animateRotate: true, duration: 900, easing: "easeInOutQuart" }
                     }}
                   />
                   
@@ -560,7 +560,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 my-1">
                   {/* SVG Progress Circle */}
-                  <Doughnut 
+                  <Doughnut key={activeTab} 
                     data={{
                       labels: ['正解', '不正解', '未解答'],
                       datasets: [{
@@ -575,7 +575,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         legend: { display: false },
                         tooltip: { enabled: false }
                       },
-                      animation: { animateScale: true, animateRotate: true }
+                      animation: { animateScale: true, animateRotate: true, duration: 900, easing: "easeInOutQuart" }
                     }}
                   />
                   
@@ -623,7 +623,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 
                 <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20">
                   {/* SVG Progress Circle */}
-                  <Doughnut 
+                  <Doughnut key={activeTab} 
                     data={{
                       labels: ['正解', '不正解', '未解答 (目標まで)'],
                       datasets: [{
@@ -638,7 +638,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                         legend: { display: false },
                         tooltip: { enabled: false }
                       },
-                      animation: { animateScale: true, animateRotate: true }
+                      animation: { animateScale: true, animateRotate: true, duration: 900, easing: "easeInOutQuart" }
                     }}
                   />
                   
