@@ -1397,10 +1397,9 @@ service cloud.firestore {
           {currentScreen === 'dash' && (
             <motion.div
               key="dash"
-              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
             >
               <Dashboard
                 onModeSelect={handleModeChange}
@@ -1427,10 +1426,9 @@ service cloud.firestore {
           {currentScreen === 'selection' && (
             <motion.div
               key="selection"
-              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
             >
               <SelectionScreen
                 mode={selectedWebMode}
@@ -1449,10 +1447,9 @@ service cloud.firestore {
           {currentScreen === 'play' && (
             <motion.div
               key="play"
-              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
             >
               <QuizPlayArea
                 filteredQuestions={quizFilteredQuestions}
@@ -1470,10 +1467,9 @@ service cloud.firestore {
           {currentScreen === 'report' && (
             <motion.div
               key="report"
-              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
             >
               <ReportScreen
                 questions={questions}
@@ -1491,10 +1487,9 @@ service cloud.firestore {
           {currentScreen === 'friends' && (
             <motion.div
               key="friends"
-              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
             >
               <FriendsScreen
                 onGoBack={handleShowDashboard}
@@ -1510,10 +1505,9 @@ service cloud.firestore {
           {currentScreen === 'admin' && (
             <motion.div
               key="admin"
-              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
-              transition={{ duration: 0.25, ease: 'easeOut' }}
+              initial={{ opacity: 0, y: 15 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -15 }}
             >
               <AdminDashboard
                 onGoBack={handleShowDashboard}
