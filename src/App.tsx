@@ -46,6 +46,8 @@ export default function App() {
   const [currentScreen, setCurrentScreen] = useState<'dash' | 'selection' | 'play' | 'admin' | 'report' | 'pdf-maker' | 'friends'>('dash');
   const [dashTab, setDashTab] = useState<'home' | 'study' | 'analysis'>('home');
   const [selectedWebMode, setSelectedWebMode] = useState<MainMode>('past');
+  // ナビゲーション方向：forward=右から左へスライド、back=左から右へスライド
+  const [navDirection, setNavDirection] = useState<'forward' | 'back'>('forward');
 
   // Multi questions data state
   const [questions, setQuestions] = useState<Question[]>(() => {
@@ -483,28 +485,35 @@ export default function App() {
   const handleModeChange = (mode: MainMode) => {
     setSelectedWebMode(mode);
     if (mode === 'admin') {
+      setNavDirection('forward');
       setCurrentScreen('admin');
     } else if (mode === 'report') {
+      setNavDirection('forward');
       setCurrentScreen('report');
     } else if (mode === 'pdf-maker') {
       // 文化祭展示版: PDF読み込み機能はセキュリティ上の理由で無効化
       alert('この機能は文化祭展示中はご利用いただけません。\n(ネットワークのセキュリティ上の理由により、PDFアップロード機能を一時停止しています)');
     } else {
+      setNavDirection('forward');
       setCurrentScreen('selection');
     }
   };
 
   const handleShowDashboard = () => {
+    setNavDirection('back');
     setCurrentScreen('dash');
     setDashTab('home');
   };
 
   const handleTabChange = (tab: 'home' | 'study' | 'analysis' | 'report' | 'friends') => {
     if (tab === 'report') {
+      setNavDirection('forward');
       setCurrentScreen('report');
     } else if (tab === 'friends') {
+      setNavDirection('forward');
       setCurrentScreen('friends');
     } else {
+      setNavDirection('back');
       setCurrentScreen('dash');
       setDashTab(tab);
     }
@@ -560,6 +569,7 @@ export default function App() {
     const shuffled = shuffleWithGrouping(uniquePool).slice(0, count);
     
     setQuizFilteredQuestions(shuffled);
+    setNavDirection('forward');
     setCurrentScreen('play');
     setSavedQuizState(null);
     localStorage.removeItem('saved_quiz_state');
@@ -606,6 +616,7 @@ export default function App() {
     }
     
     setQuizFilteredQuestions(finalQuestions);
+    setNavDirection('forward');
     setCurrentScreen('play');
     setSavedQuizState(null);
     localStorage.removeItem('saved_quiz_state');
@@ -633,6 +644,7 @@ export default function App() {
   const handleResumeQuiz = () => {
     if (savedQuizState) {
       setQuizFilteredQuestions(savedQuizState.filteredQuestions);
+      setNavDirection('forward');
       setCurrentScreen('play');
     }
   };
@@ -1096,8 +1108,10 @@ export default function App() {
     }
 
     if (selectedWebMode === 'report') {
+      setNavDirection('forward');
       setCurrentScreen('report');
     } else {
+      setNavDirection('back');
       setCurrentScreen('dash');
     }
   };
@@ -1383,9 +1397,10 @@ service cloud.firestore {
           {currentScreen === 'dash' && (
             <motion.div
               key="dash"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               <Dashboard
                 onModeSelect={handleModeChange}
@@ -1412,9 +1427,10 @@ service cloud.firestore {
           {currentScreen === 'selection' && (
             <motion.div
               key="selection"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               <SelectionScreen
                 mode={selectedWebMode}
@@ -1433,9 +1449,10 @@ service cloud.firestore {
           {currentScreen === 'play' && (
             <motion.div
               key="play"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               <QuizPlayArea
                 filteredQuestions={quizFilteredQuestions}
@@ -1453,9 +1470,10 @@ service cloud.firestore {
           {currentScreen === 'report' && (
             <motion.div
               key="report"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               <ReportScreen
                 questions={questions}
@@ -1473,9 +1491,10 @@ service cloud.firestore {
           {currentScreen === 'friends' && (
             <motion.div
               key="friends"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               <FriendsScreen
                 onGoBack={handleShowDashboard}
@@ -1491,9 +1510,10 @@ service cloud.firestore {
           {currentScreen === 'admin' && (
             <motion.div
               key="admin"
-              initial={{ opacity: 0, y: 15 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -15 }}
+              initial={{ opacity: 0, x: navDirection === 'forward' ? 60 : -60 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: navDirection === 'forward' ? -60 : 60 }}
+              transition={{ duration: 0.25, ease: 'easeOut' }}
             >
               <AdminDashboard
                 onGoBack={handleShowDashboard}
