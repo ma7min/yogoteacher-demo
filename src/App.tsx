@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { Bell, Menu, Sparkles, GraduationCap, RefreshCw, Star, Info, AlertCircle, Shield, Home, BookOpen, BarChart3, ClipboardList, Users } from 'lucide-react';
+import { Bell, Menu, Sparkles, GraduationCap, RefreshCw, Star, Info, AlertCircle, Shield, Home, BookOpen, BarChart3, ClipboardList, Users, CalendarDays } from 'lucide-react';
 import { auth, isFirebaseMock, db, handleFirestoreError, OperationType } from './lib/firebase';
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
 import { doc, getDoc, setDoc, updateDoc, writeBatch, collection, getDocs, serverTimestamp, addDoc, query, where } from 'firebase/firestore';
@@ -90,6 +90,11 @@ export default function App() {
 
   // UI status (notifs, sidebar draw)
   const [notifOpen, setNotifOpen] = useState(false);
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [calendarMonth, setCalendarMonth] = useState(() => {
+    const now = new Date();
+    return new Date(now.getFullYear(), now.getMonth(), 1);
+  });
   
   // Foreground push notification listener
   useEffect(() => {
@@ -1195,6 +1200,115 @@ export default function App() {
                   <span>デモ (未送信)</span>
                 </div>
               )}
+            </div>
+
+            {/* Calendar button */}
+            <div className="relative">
+              <button
+                onClick={() => { setCalendarOpen(!calendarOpen); setNotifOpen(false); }}
+                className={`p-2.5 rounded-xl border border-teal-50/50 hover:bg-teal-50 hover:border-teal-100 text-teal-600 transition-all focus:outline-none ${calendarOpen ? 'bg-teal-50' : 'bg-white'}`}
+                aria-label="学習カレンダー"
+              >
+                <CalendarDays className="w-4 h-4" />
+              </button>
+              <AnimatePresence>
+                {calendarOpen && (() => {
+                  const dailyActivityMap: Record<string, number> = {};
+                  Object.values(answerTimestamps).forEach(ts => {
+                    const d = new Date(ts as number);
+                    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    dailyActivityMap[key] = (dailyActivityMap[key] || 0) + 1;
+                  });
+                  const year = calendarMonth.getFullYear();
+                  const month = calendarMonth.getMonth();
+                  const firstDay = new Date(year, month, 1).getDay();
+                  const daysInMonth = new Date(year, month + 1, 0).getDate();
+                  const now2 = new Date();
+                  const todayStr = `${now2.getFullYear()}-${String(now2.getMonth() + 1).padStart(2, '0')}-${String(now2.getDate()).padStart(2, '0')}`;
+                  const maxCount = Math.max(1, ...Object.values(dailyActivityMap));
+                  const cells: React.ReactNode[] = [];
+                  for (let i = 0; i < firstDay; i++) cells.push(<div key={`b${i}`} />);
+                  for (let day = 1; day <= daysInMonth; day++) {
+                    const key = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const count = dailyActivityMap[key] || 0;
+                    const isToday = key === todayStr;
+                    const intensity = count === 0 ? 0 : Math.ceil((count / maxCount) * 4);
+                    const bgClass = count === 0 ? 'bg-slate-50 border border-slate-100 text-gray-400'
+                      : intensity === 1 ? 'bg-teal-100 border border-teal-200 text-teal-700'
+                      : intensity === 2 ? 'bg-teal-200 border border-teal-300 text-teal-800'
+                      : intensity === 3 ? 'bg-teal-400 border border-teal-500 text-white'
+                      : 'bg-teal-600 border border-teal-700 text-white';
+                    cells.push(
+                      <div key={key} className={`aspect-square flex flex-col items-center justify-center rounded-lg text-xs font-bold relative ${bgClass} ${isToday ? 'ring-2 ring-amber-400 ring-offset-1' : ''}`} title={count > 0 ? `${month + 1}/${day}: ${count}問` : `${month + 1}/${day}`}>
+                        <span>{day}</span>
+                        {count > 0 && <span className="text-[8px] font-black leading-none opacity-80">{count}</span>}
+                      </div>
+                    );
+                  }
+                  // streak
+                  let streak = 0;
+                  for (let i = 0; i < 365; i++) {
+                    const d = new Date(now2.getFullYear(), now2.getMonth(), now2.getDate() - i);
+                    const k = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+                    if (dailyActivityMap[k]) streak++; else break;
+                  }
+                  let studyDays = 0, totalAnswers = 0;
+                  for (let day = 1; day <= daysInMonth; day++) {
+                    const k = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                    const c = dailyActivityMap[k] || 0;
+                    if (c > 0) { studyDays++; totalAnswers += c; }
+                  }
+                  return (
+                    <motion.div
+                      key="calendar-dropdown"
+                      initial={{ opacity: 0, y: -8, scale: 0.97 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -8, scale: 0.97 }}
+                      transition={{ duration: 0.18 }}
+                      className="absolute right-0 top-12 w-72 bg-white rounded-2xl shadow-2xl border border-teal-100 z-50 p-4 space-y-3"
+                    >
+                      <div className="flex items-center justify-between">
+                        <h4 className="font-bold text-gray-800 text-sm">📅 学習カレンダー</h4>
+                        <div className="flex items-center gap-1">
+                          <button onClick={() => setCalendarMonth(m => new Date(m.getFullYear(), m.getMonth() - 1, 1))} className="p-1 rounded-lg hover:bg-slate-100 text-gray-500 cursor-pointer">‹</button>
+                          <span className="text-xs font-black text-teal-700 w-16 text-center">{year}年{month + 1}月</span>
+                          <button onClick={() => setCalendarMonth(m => new Date(m.getFullYear(), m.getMonth() + 1, 1))} className="p-1 rounded-lg hover:bg-slate-100 text-gray-500 cursor-pointer">›</button>
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-7 text-center text-xs font-black text-gray-400">
+                        {['日','月','火','水','木','金','土'].map((d, i) => (
+                          <div key={d} className={i === 0 ? 'text-rose-400' : i === 6 ? 'text-blue-400' : ''}>{d}</div>
+                        ))}
+                      </div>
+                      <div className="grid grid-cols-7 gap-0.5">{cells}</div>
+                      <div className="flex items-center justify-between text-xs font-bold text-gray-400 pt-1 border-t border-slate-100">
+                        <span>少ない</span>
+                        <div className="flex gap-0.5">
+                          {['bg-slate-50 border-slate-100','bg-teal-100 border-teal-200','bg-teal-200 border-teal-300','bg-teal-400 border-teal-500','bg-teal-600 border-teal-700'].map((c, i) => (
+                            <div key={i} className={`w-3 h-3 rounded border ${c}`} />
+                          ))}
+                        </div>
+                        <span>多い</span>
+                      </div>
+                      <div className="grid grid-cols-3 gap-2 pt-2 border-t border-slate-100">
+                        <div className="bg-teal-50 rounded-xl p-2 text-center">
+                          <p className="text-[10px] font-bold text-teal-600">学習日数</p>
+                          <p className="text-base font-black text-teal-700">{studyDays}<span className="text-[10px]">日</span></p>
+                        </div>
+                        <div className="bg-teal-50 rounded-xl p-2 text-center">
+                          <p className="text-[10px] font-bold text-teal-600">総解答数</p>
+                          <p className="text-base font-black text-teal-700">{totalAnswers}<span className="text-[10px]">問</span></p>
+                        </div>
+                        <div className={`rounded-xl p-2 text-center ${streak >= 3 ? 'bg-amber-50' : 'bg-slate-50'}`}>
+                          <p className={`text-[10px] font-bold ${streak >= 3 ? 'text-amber-600' : 'text-gray-400'}`}>連続学習</p>
+                          <p className={`text-base font-black ${streak >= 3 ? 'text-amber-600' : 'text-gray-400'}`}>{streak >= 3 ? '🔥' : ''}{streak}<span className="text-[10px]">日</span></p>
+                        </div>
+                      </div>
+                      <button onClick={() => setCalendarOpen(false)} className="w-full text-xs text-gray-400 pt-1 hover:text-gray-600 cursor-pointer">閉じる</button>
+                    </motion.div>
+                  );
+                })()}
+              </AnimatePresence>
             </div>
 
             {/* Notification drop trig */}

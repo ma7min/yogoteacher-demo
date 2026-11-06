@@ -888,8 +888,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
               </div>
             </div>
 
-            {/* Learning Calendar */}
-            <div className="bg-white p-5 rounded-3xl border border-teal-50/50 shadow-xl space-y-4">
+            {/* Learning Calendar - moved to header */}
+            <div className="hidden bg-white p-5 rounded-3xl border border-teal-50/50 shadow-xl space-y-4">
               <div className="flex items-center justify-between">
                 <h4 className="font-bold text-gray-800 text-sm flex items-center gap-2">
                   📅 学習カレンダー
