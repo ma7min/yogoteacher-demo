@@ -11,10 +11,12 @@ import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 function AnimatedDoughnut({ correct, incorrect, total, animKey }: { correct: number; incorrect: number; total: number; animKey: string | number }) {
   const size = 80;
   const strokeWidth = 10;
+  const pad = strokeWidth / 2 + 1; // ストロークがはみ出ないよう余白
+  const vbSize = size + pad * 2;
   const r = (size - strokeWidth) / 2;
   const circ = 2 * Math.PI * r;
-  const cx = size / 2;
-  const cy = size / 2;
+  const cx = vbSize / 2;
+  const cy = vbSize / 2;
 
   const pctCorrect = total > 0 ? correct / total : 0;
   const pctIncorrect = total > 0 ? incorrect / total : 0;
@@ -49,7 +51,7 @@ function AnimatedDoughnut({ correct, incorrect, total, animKey }: { correct: num
   const incorrectStart = pctCorrect * circ * progress;
 
   return (
-    <svg width={size} height={size} style={{ transform: 'rotate(-90deg)' }}>
+    <svg width="100%" height="100%" viewBox={`0 0 ${vbSize} ${vbSize}`} style={{ transform: 'rotate(-90deg)' }}>
       {/* グレー背景（常時表示） */}
       <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={strokeWidth} />
       {/* 不正解（ピンク）: 正解の後ろに配置 */}
