@@ -1270,10 +1270,9 @@ export default function App() {
         <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
           {[
             { label: 'ホーム', icon: Home, action: () => handleTabChange('home'), active: currentScreen === 'dash' && dashTab === 'home' },
-            { label: 'クイズを解く', icon: BookOpen, action: () => handleTabChange('study'), active: (currentScreen === 'dash' && dashTab === 'study') || currentScreen === 'selection' },
+            { label: '問題を解く', icon: BookOpen, action: () => handleTabChange('study'), active: (currentScreen === 'dash' && dashTab === 'study') || currentScreen === 'selection' },
             { label: '成績・分析', icon: BarChart3, action: () => handleTabChange('analysis'), active: currentScreen === 'dash' && dashTab === 'analysis' },
             { label: 'フレンド', icon: Users, action: () => handleTabChange('friends'), active: currentScreen === 'friends' },
-            { label: '問題レポート', icon: ClipboardList, action: () => handleTabChange('report'), active: currentScreen === 'report' },
           ].map(({ label, icon: Icon, action, active }) => (
             <button
               key={label}

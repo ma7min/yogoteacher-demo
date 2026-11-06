@@ -511,17 +511,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   </button>
 
                   <button
-                    onClick={() => onModeSelect('report')}
-                    className="p-5 bg-amber-50/25 hover:bg-amber-50 border-2 border-amber-100/30 hover:border-amber-400 rounded-2xl flex flex-col items-center gap-3 transition-all text-center cursor-pointer group"
-                  >
-                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm text-amber-600 flex items-center justify-center font-bold font-mono group-hover:scale-110 transition-transform">
-                      <ClipboardList className="w-6 h-6" />
-                    </div>
-                    <span className="font-extrabold text-sm text-amber-900">レポート</span>
-                    <span className="text-xs text-amber-600 leading-relaxed font-semibold">全体の成績分析と問題アーカイブ</span>
-                  </button>
-
-                  <button
                     onClick={() => onModeSelect('pdf-maker')}
                     className="p-5 bg-pink-50/40 hover:bg-pink-50 border-2 border-pink-100/50 hover:border-pink-400 rounded-2xl flex flex-col items-center gap-3 transition-all text-center cursor-pointer group"
                   >
