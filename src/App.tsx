@@ -1537,10 +1537,9 @@ service cloud.firestore {
             {(() => {
               const tabs = [
                 { key: 'home' as const, label: 'ホーム', icon: Home, active: currentScreen === 'dash' && dashTab === 'home' },
-                { key: 'study' as const, label: 'クイズ', icon: BookOpen, active: (currentScreen === 'dash' && dashTab === 'study') || currentScreen === 'selection' },
+                { key: 'study' as const, label: '問題', icon: BookOpen, active: (currentScreen === 'dash' && dashTab === 'study') || currentScreen === 'selection' },
                 { key: 'analysis' as const, label: '成績', icon: BarChart3, active: currentScreen === 'dash' && dashTab === 'analysis' },
                 { key: 'friends' as const, label: 'フレンド', icon: Users, active: currentScreen === 'friends' },
-                { key: 'report' as const, label: 'レポート', icon: ClipboardList, active: currentScreen === 'report' },
               ];
               return tabs.map(({ key, label, icon: Icon, active }) => (
                 <button

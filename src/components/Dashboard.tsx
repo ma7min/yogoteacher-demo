@@ -316,13 +316,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                     <Shuffle className="w-4 h-4" />
                     ランダムで5問出題
                   </button>
-                  <button
-                    onClick={() => onStartRandom && onStartRandom(10)}
-                    className="px-4 sm:px-5 py-3.5 bg-white text-teal-700 font-extrabold rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 hover:bg-teal-50 active:scale-95 shadow-lg shadow-teal-900/15 transition-all duration-150 cursor-pointer text-sm"
-                  >
-                    <Shuffle className="w-4 h-4" />
-                    ランダムで10問出題
-                  </button>
                 </div>
               </div>
             )}
@@ -470,17 +463,6 @@ export const Dashboard: React.FC<DashboardProps> = ({
                       <Shuffle className="w-6 h-6" />
                     </div>
                     <span className="font-extrabold text-sm text-teal-900">ランダム5問</span>
-                    <span className="text-xs text-teal-600 leading-relaxed font-semibold">未解答や苦手から優先出題</span>
-                  </button>
-
-                  <button
-                    onClick={() => onStartRandom && onStartRandom(10)}
-                    className="p-5 bg-teal-50/40 hover:bg-teal-50 border-2 border-teal-100/50 hover:border-teal-400 rounded-2xl flex flex-col items-center gap-3 transition-all text-center cursor-pointer group"
-                  >
-                    <div className="w-12 h-12 bg-white rounded-xl shadow-sm text-teal-600 flex items-center justify-center font-bold font-mono group-hover:scale-110 transition-transform">
-                      <Shuffle className="w-6 h-6" />
-                    </div>
-                    <span className="font-extrabold text-sm text-teal-900">ランダム10問</span>
                     <span className="text-xs text-teal-600 leading-relaxed font-semibold">未解答や苦手から優先出題</span>
                   </button>
 
