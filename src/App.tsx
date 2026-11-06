@@ -539,11 +539,14 @@ export default function App() {
   };
 
   const handleStartRandom = (count: number) => {
+    // 記述式（番号付き空欄①②）を除いた選択式問題のみ対象
+    const isMultipleChoice = (q: Question) => !q.question.includes('①') && !q.question.includes('②');
+
     // 1. 未解答の問題を抽出
-    const unattempted = questions.filter(q => answerHistory[q.id] === undefined);
-    
+    const unattempted = questions.filter(q => answerHistory[q.id] === undefined && isMultipleChoice(q));
+
     // 2. 不正解の問題を抽出
-    const incorrect = questions.filter(q => answerHistory[q.id] === false);
+    const incorrect = questions.filter(q => answerHistory[q.id] === false && isMultipleChoice(q));
     
     let pool: Question[] = [];
     if (unattempted.length >= count) {
@@ -553,7 +556,7 @@ export default function App() {
       pool = [...unattempted, ...incorrect];
       // それでも足りない場合は全問題から（正解済みの問題も混ぜる）
       if (pool.length < count) {
-        const correct = questions.filter(q => answerHistory[q.id] === true);
+        const correct = questions.filter(q => answerHistory[q.id] === true && isMultipleChoice(q));
         pool = [...pool, ...correct];
       }
     }
