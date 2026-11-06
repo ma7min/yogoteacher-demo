@@ -30,33 +30,26 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
   const [selectedFieldFilter, setSelectedFieldFilter] = useState<string>('all');
   const [selectedStatusFilter, setSelectedStatusFilter] = useState<'all' | 'correct' | 'incorrect' | 'unattempted'>('all');
 
-  // Filter questions based on selected active tab
   const baseQuestions = questions.filter(q => {
-    if (activeTab === 'past') {
-      return q.year !== '予想問題' && q.year !== 'AI予想問題';
-    } else if (activeTab === 'expected') {
-      return q.year === '予想問題';
-    } else {
-      return q.year === 'AI予想問題';
-    }
+    if (activeTab === 'past') return q.year !== '予想問題' && q.year !== 'AI予想問題';
+    if (activeTab === 'expected') return q.year === '予想問題';
+    return q.year === 'AI予想問題';
   });
 
-  // Overall Statistics calculations for current tab selection
   const totalQuestions = baseQuestions.length;
   const attemptedCount = baseQuestions.filter(q => answerHistory[q.id] !== undefined).length;
   const correctCount = baseQuestions.filter(q => answerHistory[q.id] === true).length;
   const accuracyRate = attemptedCount > 0 ? (correctCount / attemptedCount) * 100 : 0;
 
-  // Grade decision
   let grade = "- 判定";
   let gradeColor = "bg-slate-100 text-slate-500";
   if (attemptedCount > 0) {
     if (accuracyRate >= 85) {
       grade = "A 判定";
-      gradeColor = "bg-gradient-to-br from-emerald-500 to-teal-500 text-white shadow-lg shadow-emerald-500/20";
+      gradeColor = "bg-gradient-to-br from-teal-500 to-teal-600 text-white shadow-lg shadow-teal-500/20";
     } else if (accuracyRate >= 70) {
       grade = "B 判定";
-      gradeColor = "bg-gradient-to-br from-teal-500 to-cyan-500 text-white shadow-lg shadow-teal-500/20";
+      gradeColor = "bg-gradient-to-br from-teal-400 to-teal-500 text-white shadow-lg shadow-teal-500/20";
     } else if (accuracyRate >= 50) {
       grade = "C 判定";
       gradeColor = "bg-gradient-to-br from-amber-500 to-orange-500 text-white shadow-lg shadow-amber-500/20";
@@ -66,130 +59,154 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
     }
   }
 
-  // Fields and categories list based on baseQuestions
   const fields = Array.from(new Set(baseQuestions.map(q => q.field || '未分類')));
 
-  // Field details list based on baseQuestions
   const fieldStats = fields.map(field => {
     const fieldQuestions = baseQuestions.filter(q => q.field === field);
     const totalInField = fieldQuestions.length;
     const attemptedInField = fieldQuestions.filter(q => answerHistory[q.id] !== undefined).length;
     const correctInField = fieldQuestions.filter(q => answerHistory[q.id] === true).length;
     const accuracy = attemptedInField > 0 ? (correctInField / attemptedInField) * 100 : 0;
-    return {
-      field,
-      total: totalInField,
-      attempted: attemptedInField,
-      correct: correctInField,
-      accuracy
-    };
+    return { field, total: totalInField, attempted: attemptedInField, correct: correctInField, accuracy };
   });
 
-  // Filter & Search logic using baseQuestions
   const filteredQuestions = baseQuestions.filter(q => {
-    // Search keyword query match
     const textToSearch = `${q.question} ${q.prefecture} ${q.year} ${q.field} ${q.explanation}`.toLowerCase();
     const queryMatch = textToSearch.includes(searchQuery.toLowerCase());
-
-    // Field category match
     const fieldMatch = selectedFieldFilter === 'all' || q.field === selectedFieldFilter;
-
-    // Correctness status match
     let statusMatch = true;
-    if (selectedStatusFilter === 'correct') {
-      statusMatch = answerHistory[q.id] === true;
-    } else if (selectedStatusFilter === 'incorrect') {
-      statusMatch = answerHistory[q.id] === false;
-    } else if (selectedStatusFilter === 'unattempted') {
-      statusMatch = answerHistory[q.id] === undefined;
-    }
-
+    if (selectedStatusFilter === 'correct') statusMatch = answerHistory[q.id] === true;
+    else if (selectedStatusFilter === 'incorrect') statusMatch = answerHistory[q.id] === false;
+    else if (selectedStatusFilter === 'unattempted') statusMatch = answerHistory[q.id] === undefined;
     return queryMatch && fieldMatch && statusMatch;
   });
 
-  return (
-    <div className="space-y-6">
-      {/* Back navigation header styling */}
-      <div className="flex items-center justify-between pb-2 border-b border-teal-50">
-        <div className="flex items-center gap-3">
-          <button
-            onClick={onGoBack}
-            className="p-2 bg-white hover:bg-teal-50 text-teal-600 rounded-xl transition-all cursor-pointer border border-teal-50 shadow-sm"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </button>
-          <div>
-            <h2 className="text-xl font-extrabold tracking-tight text-teal-800 flex items-center gap-2">
-              成績レポート
-            </h2>
-            <p className="text-xs text-gray-400">
-              全収録問題の解答状況アーカイブと、過去3回の解答履歴を確認できます。
-            </p>
+  // 問題カード（履歴・アーカイブ共通）
+  const QuestionCard = ({ q, showId = false }: { q: Question; showId?: boolean }) => {
+    const attempts = attemptsHistory[q.id] || [];
+    const displayAttempts: (boolean | null)[] = [...attempts].slice(-3);
+    while (displayAttempts.length < 3) displayAttempts.unshift(null);
+    const ts = answerTimestamps[q.id];
+    const lastAnswered = ts
+      ? new Date(ts).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
+      : null;
+    const lastResult = attempts.length > 0 ? attempts[attempts.length - 1] : null;
+    const isBookmarked = bookmarks.has(q.id);
+
+    return (
+      <div className="p-4 sm:p-5 hover:bg-teal-50/30 transition-colors border-b border-slate-100 last:border-b-0">
+        {/* タグ行 */}
+        <div className="flex items-center gap-1.5 flex-wrap mb-2">
+          {showId && <span className="font-mono font-black text-xs text-teal-600">No.{q.id}</span>}
+          {lastResult === true && (
+            <span className="px-2 py-0.5 bg-teal-50 text-teal-700 border border-teal-200 rounded-full text-xs font-black">直近: ○</span>
+          )}
+          {lastResult === false && (
+            <span className="px-2 py-0.5 bg-rose-50 text-rose-500 border border-rose-200 rounded-full text-xs font-black">直近: ×</span>
+          )}
+          {lastResult === null && answerHistory[q.id] === undefined && (
+            <span className="px-2 py-0.5 bg-slate-100 text-slate-500 border border-slate-200 rounded-full text-xs font-black">未解答</span>
+          )}
+          <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full text-xs font-bold">{q.year} {q.prefecture}</span>
+          <span className="px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full text-xs font-black">{q.field || '未分類'}</span>
+          {lastAnswered && <span className="text-xs text-gray-400 font-medium ml-auto">{lastAnswered}</span>}
+        </div>
+
+        {/* 問題文 */}
+        <p className="text-sm font-bold text-gray-800 leading-relaxed line-clamp-2 mb-3"
+          dangerouslySetInnerHTML={{ __html: formatKouAndGou(q.question) }}
+        />
+
+        {/* アクション行 */}
+        <div className="flex items-center justify-between gap-3">
+          {/* 直近3回の○× */}
+          <div className="flex items-center gap-1.5">
+            <span className="text-xs text-gray-400 font-bold mr-1">直近3回</span>
+            {displayAttempts.map((attempt, index) => (
+              attempt === true ? (
+                <div key={index} className="w-7 h-7 rounded-full bg-teal-50 border-2 border-teal-400 flex items-center justify-center text-teal-600 font-extrabold text-sm">○</div>
+              ) : attempt === false ? (
+                <div key={index} className="w-7 h-7 rounded-full bg-rose-50 border-2 border-rose-300 flex items-center justify-center text-rose-500 font-bold text-sm">×</div>
+              ) : (
+                <div key={index} className="w-7 h-7 rounded-full bg-slate-50 border-2 border-slate-200 flex items-center justify-center text-gray-300 text-xs font-bold">-</div>
+              )
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2">
+            {onToggleBookmark && (
+              <button
+                onClick={() => onToggleBookmark(q.id)}
+                className={`p-1.5 rounded-lg transition-colors cursor-pointer ${isBookmarked ? 'text-amber-500 bg-amber-50' : 'text-gray-300 hover:text-amber-400 hover:bg-amber-50'}`}
+                title={isBookmarked ? 'ブックマーク解除' : 'ブックマーク登録'}
+              >
+                <Bookmark className={`w-4 h-4 ${isBookmarked ? 'fill-amber-500' : ''}`} />
+              </button>
+            )}
+            <button
+              onClick={() => onStartSingleQuestion(q)}
+              className="px-4 py-2 bg-teal-500 hover:bg-teal-600 active:scale-95 text-white font-extrabold rounded-xl shadow-md shadow-teal-500/20 flex items-center gap-1.5 transition-all cursor-pointer text-sm"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              解く
+            </button>
           </div>
         </div>
       </div>
+    );
+  };
 
-      {/* Segmented Tab Switcher */}
-      <div className="flex bg-slate-100 p-1 rounded-2xl max-w-lg shadow-sm border border-slate-200/50">
+  return (
+    <div className="space-y-6">
+      {/* ヘッダー */}
+      <div className="flex items-center gap-3 pb-2 border-b border-teal-50">
         <button
-          onClick={() => {
-            setActiveTab('past');
-            setSelectedFieldFilter('all');
-          }}
-          className={`flex-1 py-2 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-            activeTab === 'past'
-              ? 'bg-white text-teal-800 shadow-sm'
-              : 'text-gray-500 hover:text-gray-800'
-          }`}
+          onClick={onGoBack}
+          className="p-2 bg-white hover:bg-teal-50 text-teal-600 rounded-xl transition-all cursor-pointer border border-teal-50 shadow-sm"
         >
-          <BookOpen className="w-3.5 h-3.5 text-teal-600" />
-          <span>過去問</span>
+          <ArrowLeft className="w-4 h-4" />
         </button>
-        <button
-          onClick={() => {
-            setActiveTab('expected');
-            setSelectedFieldFilter('all');
-          }}
-          className={`flex-1 py-2 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-            activeTab === 'expected'
-              ? 'bg-white text-rose-800 shadow-sm'
-              : 'text-gray-500 hover:text-gray-800'
-          }`}
-        >
-          <Target className="w-3.5 h-3.5 text-rose-600" />
-          <span>予想問題</span>
-        </button>
-        <button
-          onClick={() => {
-            setActiveTab('ai');
-            setSelectedFieldFilter('all');
-          }}
-          className={`flex-1 py-2 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-            activeTab === 'ai'
-              ? 'bg-white text-amber-800 shadow-sm'
-              : 'text-gray-500 hover:text-gray-800'
-          }`}
-        >
-          <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-          <span>AI予想問題</span>
-        </button>
+        <div>
+          <h2 className="text-xl font-extrabold tracking-tight text-teal-800">成績レポート</h2>
+          <p className="text-xs text-gray-400">解答状況アーカイブ・直近3回の履歴を確認できます</p>
+        </div>
       </div>
 
-      {/* Main dashboard content columns */}
+      {/* 問題種別タブ */}
+      <div className="flex bg-slate-100 p-1 rounded-2xl max-w-lg shadow-sm border border-slate-200/50">
+        {([
+          { key: 'past', label: '過去問', icon: <BookOpen className="w-3.5 h-3.5 text-teal-600" />, activeText: 'text-teal-800' },
+          { key: 'expected', label: '予想問題', icon: <Target className="w-3.5 h-3.5 text-rose-500" />, activeText: 'text-rose-800' },
+          { key: 'ai', label: 'AI予想', icon: <Sparkles className="w-3.5 h-3.5 text-amber-500" />, activeText: 'text-amber-800' },
+        ] as const).map(tab => (
+          <button
+            key={tab.key}
+            onClick={() => { setActiveTab(tab.key); setSelectedFieldFilter('all'); }}
+            className={`flex-1 py-2 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              activeTab === tab.key ? `bg-white ${tab.activeText} shadow-sm` : 'text-gray-500 hover:text-gray-800'
+            }`}
+          >
+            {tab.icon}
+            <span>{tab.label}</span>
+          </button>
+        ))}
+      </div>
+
+      {/* メインコンテンツ */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Left Side: General Report analysis */}
+        {/* 左：全体データ */}
         <div className="md:col-span-1 space-y-6">
           <div className="bg-white p-6 rounded-3xl border border-teal-50/50 shadow-xl space-y-6">
             <h3 className="font-extrabold text-gray-800 text-sm border-b pb-3 border-teal-50">全体データ</h3>
-            
-            {/* Circular accuracy + grade card */}
+
+            {/* 正答率リング */}
             <div className="flex flex-col items-center gap-4">
               <div className="relative w-36 h-36">
                 <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
                   <circle cx="60" cy="60" r="50" fill="none" stroke="#f1f5f9" strokeWidth="10" />
                   <motion.circle
                     cx="60" cy="60" r="50" fill="none"
-                    stroke={accuracyRate >= 85 ? '#10b981' : accuracyRate >= 70 ? '#14b8a6' : accuracyRate >= 50 ? '#f59e0b' : '#ff6f94'}
+                    stroke={accuracyRate >= 85 ? '#14b8a6' : accuracyRate >= 70 ? '#14b8a6' : accuracyRate >= 50 ? '#f59e0b' : '#ff6f94'}
                     strokeWidth="10"
                     strokeLinecap="round"
                     strokeDasharray={`${2 * Math.PI * 50}`}
@@ -203,16 +220,16 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
                     {accuracyRate.toFixed(0)}
                   </span>
                   <span className="text-xs font-bold text-slate-400">%</span>
-                  <span className="text-[9px] font-bold text-slate-400 mt-0.5">正解率</span>
+                  <span className="text-xs font-bold text-slate-400 mt-0.5">正解率</span>
                 </div>
               </div>
 
               <div className={`w-full px-5 py-3 rounded-2xl flex items-center justify-between ${gradeColor}`}>
                 <div>
-                  <span className="text-[10px] font-bold opacity-80 block">総合判定</span>
+                  <span className="text-xs font-bold opacity-80 block">総合判定</span>
                   <span className="text-xl font-black tracking-wide">{grade}</span>
                 </div>
-                <div className="text-right text-xs font-medium opacity-80">
+                <div className="text-right text-sm font-medium opacity-80">
                   {attemptedCount > 0
                     ? <><p>{correctCount}問 正解</p><p>{attemptedCount}問 解答済</p></>
                     : <p>未演習</p>}
@@ -220,19 +237,19 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
               </div>
             </div>
 
-            {/* Metrics group */}
+            {/* 数字カード */}
             <div className="grid grid-cols-2 gap-3">
               <div className="bg-slate-50/30 p-4 rounded-2xl border border-slate-100 text-center">
-                <span className="text-[10px] text-gray-400 font-bold block mb-1">総出題数</span>
+                <span className="text-xs text-gray-400 font-bold block mb-1">総出題数</span>
                 <span className="text-xl font-black text-slate-700 font-mono">{totalQuestions}問</span>
               </div>
               <div className="bg-slate-50/30 p-4 rounded-2xl border border-slate-100 text-center">
-                <span className="text-[10px] text-gray-400 font-bold block mb-1">着手問題数</span>
+                <span className="text-xs text-gray-400 font-bold block mb-1">着手問題数</span>
                 <span className="text-xl font-black text-teal-600 font-mono">{attemptedCount}問</span>
               </div>
             </div>
 
-            {/* Field breakdown list matching reference image exactly with horizontal fill meters */}
+            {/* 分野別正答率 */}
             <div className="space-y-4 pt-2">
               <h4 className="font-extrabold text-gray-800 text-xs tracking-wider uppercase border-b pb-2">分野別正答率</h4>
               <div className="space-y-3">
@@ -241,14 +258,14 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
                     <div className="flex justify-between items-center text-xs">
                       <span className="font-bold text-slate-700">{stat.field}</span>
                       <span className="text-gray-400 font-medium font-mono">
-                        {stat.attempted > 0 ? `正解 ${stat.correct}/${stat.attempted}` : '未着手'}
-                        <span className="ml-2 font-bold text-emerald-600">{stat.attempted > 0 ? `${stat.accuracy.toFixed(0)}%` : '-'}</span>
+                        {stat.attempted > 0 ? `${stat.correct}/${stat.attempted}` : '未着手'}
+                        <span className="ml-2 font-bold text-teal-600">{stat.attempted > 0 ? `${stat.accuracy.toFixed(0)}%` : '-'}</span>
                       </span>
                     </div>
                     <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                      <div 
-                        className="bg-teal-500 h-full rounded-full transition-all duration-500" 
-                        style={{ width: `${stat.attempted > 0 ? stat.accuracy : 0}%` }} 
+                      <div
+                        className="bg-teal-500 h-full rounded-full transition-all duration-500"
+                        style={{ width: `${stat.attempted > 0 ? stat.accuracy : 0}%` }}
                       />
                     </div>
                   </div>
@@ -258,28 +275,28 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
           </div>
         </div>
 
-        {/* Right Side */}
+        {/* 右：履歴・アーカイブ */}
         <div className="md:col-span-2 space-y-4 flex flex-col">
 
-          {/* View toggle: 学習履歴 / 問題アーカイブ */}
+          {/* ビュー切り替え */}
           <div className="flex bg-slate-100 p-1 rounded-2xl shadow-sm border border-slate-200/50">
             <button
               onClick={() => setRightView('history')}
-              className={`flex-1 py-2 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`flex-1 py-2.5 text-sm font-black rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 rightView === 'history' ? 'bg-white text-teal-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'
               }`}
             >
-              <History className="w-3.5 h-3.5" />
-              学習履歴（新しい順）
+              <History className="w-4 h-4" />
+              学習履歴
             </button>
             <button
               onClick={() => setRightView('archive')}
-              className={`flex-1 py-2 text-xs font-black rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+              className={`flex-1 py-2.5 text-sm font-black rounded-xl transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
                 rightView === 'archive' ? 'bg-white text-teal-800 shadow-sm' : 'text-gray-500 hover:text-gray-800'
               }`}
             >
-              <Archive className="w-3.5 h-3.5" />
-              問題アーカイブ（全問題）
+              <Archive className="w-4 h-4" />
+              問題アーカイブ
             </button>
           </div>
 
@@ -295,79 +312,20 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
 
             return (
               <div className="bg-white rounded-3xl border border-teal-50/50 shadow-xl overflow-hidden flex flex-col flex-1 min-h-[460px]">
-                <div className="bg-slate-50 p-4 border-b border-teal-50/50 flex items-center justify-between">
-                  <h4 className="font-extrabold text-gray-800 text-xs">
-                    学習履歴 <span className="text-teal-600">{attemptedQuestions.length}問</span>
+                <div className="bg-slate-50 px-5 py-3.5 border-b border-teal-50/50 flex items-center justify-between">
+                  <h4 className="font-extrabold text-gray-800 text-sm">
+                    学習履歴 <span className="text-teal-600 font-mono">{attemptedQuestions.length}問</span>
                   </h4>
-                  <p className="text-[10px] text-gray-400 font-medium">直近3回: 左(古い) → 右(新しい)</p>
+                  <p className="text-xs text-gray-400 font-medium">左(古い) → 右(新しい)</p>
                 </div>
-                <div className="divide-y divide-slate-100 max-h-[560px] overflow-y-auto">
+                <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
                   {attemptedQuestions.length === 0 ? (
                     <div className="p-12 text-center space-y-3">
                       <History className="w-8 h-8 text-slate-300 mx-auto" />
-                      <p className="text-xs text-slate-400 font-bold">まだ解いた問題がありません。</p>
+                      <p className="text-sm text-slate-400 font-bold">まだ解いた問題がありません</p>
                     </div>
                   ) : (
-                    attemptedQuestions.map(q => {
-                      const attempts = attemptsHistory[q.id] || [];
-                      const displayAttempts: (boolean | null)[] = [...attempts].slice(-3);
-                      while (displayAttempts.length < 3) displayAttempts.unshift(null);
-                      const ts = answerTimestamps[q.id];
-                      const lastAnswered = ts
-                        ? new Date(ts).toLocaleDateString('ja-JP', { month: 'numeric', day: 'numeric', hour: '2-digit', minute: '2-digit' })
-                        : null;
-                      const lastResult = attempts.length > 0 ? attempts[attempts.length - 1] : null;
-
-                      return (
-                        <div key={q.id} className="p-4 hover:bg-slate-50/50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
-                          <div className="space-y-1.5 flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              {lastResult === true && (
-                                <span className="px-2 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-200 rounded-full text-[9px] font-black">直近: ○</span>
-                              )}
-                              {lastResult === false && (
-                                <span className="px-2 py-0.5 bg-rose-50 text-rose-500 border border-rose-200 rounded-full text-[9px] font-black">直近: ×</span>
-                              )}
-                              <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full text-[9px] font-bold">{q.year} {q.prefecture}</span>
-                              <span className="px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full text-[9px] font-black">{q.field || '未分類'}</span>
-                              {lastAnswered && <span className="text-[9px] text-gray-400 font-medium">{lastAnswered}</span>}
-                            </div>
-                            <p className="font-bold text-gray-700 break-words leading-relaxed line-clamp-2 pr-2"
-                              dangerouslySetInnerHTML={{ __html: formatKouAndGou(q.question) }}
-                            />
-                          </div>
-                          <div className="flex items-center gap-3 shrink-0 justify-between sm:justify-end">
-                            <div className="flex items-center gap-1.5">
-                              {displayAttempts.map((attempt, index) => (
-                                attempt === true ? (
-                                  <div key={index} className="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-300 flex items-center justify-center text-emerald-600 font-extrabold text-xs shadow-sm">○</div>
-                                ) : attempt === false ? (
-                                  <div key={index} className="w-6 h-6 rounded-full bg-[#ff6f94]/10 border border-[#ff6f94]/30 flex items-center justify-center text-[#ff6f94] font-bold text-xs shadow-sm">×</div>
-                                ) : (
-                                  <div key={index} className="w-6 h-6 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-gray-300 text-[10px] font-bold">-</div>
-                                )
-                              ))}
-                            </div>
-                            {onToggleBookmark && (
-                              <button
-                                onClick={() => onToggleBookmark(q.id)}
-                                className={`p-1.5 rounded-lg transition-colors ${bookmarks.has(q.id) ? 'text-amber-500 bg-amber-50' : 'text-gray-300 hover:text-amber-400 hover:bg-amber-50'}`}
-                                title={bookmarks.has(q.id) ? 'ブックマーク解除' : 'ブックマーク登録'}
-                              >
-                                <Bookmark className={`w-3.5 h-3.5 ${bookmarks.has(q.id) ? 'fill-amber-500' : ''}`} />
-                              </button>
-                            )}
-                            <button
-                              onClick={() => onStartSingleQuestion(q)}
-                              className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white font-extrabold rounded-xl shadow-md shadow-teal-500/10 flex items-center gap-1 transition-all cursor-pointer text-xs"
-                            >
-                              <Play className="w-3.5 h-3.5 fill-current" />
-                              解く
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })
+                    attemptedQuestions.map(q => <QuestionCard key={q.id} q={q} />)
                   )}
                 </div>
               </div>
@@ -377,107 +335,91 @@ export const ReportScreen: React.FC<ReportScreenProps> = ({
           {/* 問題アーカイブビュー */}
           {rightView === 'archive' && (
             <>
+              {/* 検索・フィルター */}
               <div className="bg-white p-5 rounded-3xl border border-teal-50/50 shadow-xl space-y-4">
                 <div className="relative">
                   <Search className="absolute left-3.5 top-3.5 w-4 h-4 text-gray-400" />
                   <input
                     type="text"
-                    placeholder="問題文、キーワード、出題自治体、解説文から検索..."
+                    placeholder="問題文・キーワード・自治体・解説から検索..."
                     value={searchQuery}
                     onChange={e => setSearchQuery(e.target.value)}
-                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-100 focus:border-teal-400 focus:bg-white rounded-2xl outline-none text-xs font-bold text-gray-700 transition-all shadow-inner"
+                    className="w-full pl-10 pr-4 py-3 bg-slate-50 border border-slate-100 focus:border-teal-400 focus:bg-white rounded-2xl outline-none text-sm font-bold text-gray-700 transition-all"
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">分野フィルター</label>
-                    <select
-                      value={selectedFieldFilter}
-                      onChange={e => setSelectedFieldFilter(e.target.value)}
-                      className="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 focus:border-teal-300 rounded-xl outline-none text-xs font-bold text-gray-700 cursor-pointer appearance-none"
-                    >
-                      <option value="all">すべての分野 ({baseQuestions.length})</option>
-                      {fields.map(f => (
-                        <option key={f} value={f}>{f} ({baseQuestions.filter(q => q.field === f).length})</option>
-                      ))}
-                    </select>
+
+                {/* 解答状態フィルター（ピルボタン） */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block">解答状態</label>
+                  <div className="flex flex-wrap gap-2">
+                    {([
+                      { value: 'all', label: 'すべて' },
+                      { value: 'correct', label: '✓ 正解' },
+                      { value: 'incorrect', label: '✗ 不正解' },
+                      { value: 'unattempted', label: '− 未解答' },
+                    ] as const).map(opt => (
+                      <button
+                        key={opt.value}
+                        onClick={() => setSelectedStatusFilter(opt.value)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer ${
+                          selectedStatusFilter === opt.value
+                            ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20'
+                            : 'bg-slate-100 text-slate-600 hover:bg-teal-50 hover:text-teal-700'
+                        }`}
+                      >
+                        {opt.label}
+                      </button>
+                    ))}
                   </div>
-                  <div className="space-y-1.5">
-                    <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest block">解答状態</label>
-                    <select
-                      value={selectedStatusFilter}
-                      onChange={e => setSelectedStatusFilter(e.target.value as any)}
-                      className="w-full px-3 py-2.5 bg-slate-50 border border-slate-100 focus:border-[#ff6f94] rounded-xl outline-none text-xs font-bold text-gray-700 cursor-pointer"
+                </div>
+
+                {/* 分野フィルター（ピルボタン） */}
+                <div className="space-y-2">
+                  <label className="text-xs font-bold text-gray-400 uppercase tracking-widest block">分野</label>
+                  <div className="flex flex-wrap gap-2">
+                    <button
+                      onClick={() => setSelectedFieldFilter('all')}
+                      className={`px-3 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer ${
+                        selectedFieldFilter === 'all'
+                          ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20'
+                          : 'bg-slate-100 text-slate-600 hover:bg-teal-50 hover:text-teal-700'
+                      }`}
                     >
-                      <option value="all">すべての解答状態</option>
-                      <option value="correct">正解している問題</option>
-                      <option value="incorrect">間違えた問題</option>
-                      <option value="unattempted">未着手の問題</option>
-                    </select>
+                      すべて ({baseQuestions.length})
+                    </button>
+                    {fields.map(f => (
+                      <button
+                        key={f}
+                        onClick={() => setSelectedFieldFilter(f)}
+                        className={`px-3 py-1.5 rounded-full text-xs font-black transition-all cursor-pointer ${
+                          selectedFieldFilter === f
+                            ? 'bg-teal-500 text-white shadow-md shadow-teal-500/20'
+                            : 'bg-slate-100 text-slate-600 hover:bg-teal-50 hover:text-teal-700'
+                        }`}
+                      >
+                        {f} ({baseQuestions.filter(q => q.field === f).length})
+                      </button>
+                    ))}
                   </div>
                 </div>
               </div>
 
+              {/* 問題リスト */}
               <div className="bg-white rounded-3xl border border-teal-50/50 shadow-xl overflow-hidden flex flex-col flex-1 min-h-[460px]">
-                <div className="bg-slate-50 p-4 border-b border-teal-50/50 flex items-center justify-between">
-                  <h4 className="font-extrabold text-gray-800 text-xs">全問題一覧 ({filteredQuestions.length}件)</h4>
-                  <p className="text-[10px] text-gray-400 font-medium">直近3回: 左(古い) → 右(新しい)</p>
+                <div className="bg-slate-50 px-5 py-3.5 border-b border-teal-50/50 flex items-center justify-between">
+                  <h4 className="font-extrabold text-gray-800 text-sm">
+                    問題一覧 <span className="text-teal-600 font-mono">{filteredQuestions.length}件</span>
+                  </h4>
+                  <p className="text-xs text-gray-400 font-medium">左(古い) → 右(新しい)</p>
                 </div>
-                <div className="divide-y divide-slate-100 max-h-[500px] overflow-y-auto">
+                <div className="divide-y divide-slate-100 max-h-[600px] overflow-y-auto">
                   {filteredQuestions.length === 0 ? (
                     <div className="p-12 text-center space-y-3">
                       <AlertCircle className="w-8 h-8 text-slate-300 mx-auto" />
-                      <p className="text-xs text-slate-400 font-bold">該当する問題が見つかりません。</p>
+                      <p className="text-sm text-slate-400 font-bold">該当する問題が見つかりません</p>
                     </div>
                   ) : (
-                    filteredQuestions.map(q => {
-                      const attempts = attemptsHistory[q.id] || [];
-                      const displayAttempts: (boolean | null)[] = [...attempts].slice(-3);
-                      while (displayAttempts.length < 3) displayAttempts.unshift(null);
-                      return (
-                        <div key={q.id} className="p-4 hover:bg-slate-50/50 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-4 text-xs">
-                          <div className="space-y-2 flex-1 min-w-0">
-                            <div className="flex items-center gap-2 flex-wrap">
-                              <span className="font-mono font-black text-xs text-teal-600">No.{q.id}</span>
-                              <span className="px-2 py-0.5 bg-slate-100 text-slate-600 rounded-full text-[9px] font-bold">{q.year} {q.prefecture}</span>
-                              <span className="px-2 py-0.5 bg-teal-50 text-teal-700 rounded-full text-[9px] font-black">{q.field || '未分類'}</span>
-                            </div>
-                            <p className="font-bold text-gray-700 break-words leading-relaxed line-clamp-2 pr-2"
-                              dangerouslySetInnerHTML={{ __html: formatKouAndGou(q.question) }}
-                            />
-                          </div>
-                          <div className="flex items-center gap-4 shrink-0 justify-between sm:justify-end">
-                            <div className="flex items-center gap-1.5">
-                              {displayAttempts.map((attempt, index) => (
-                                attempt === true ? (
-                                  <div key={index} className="w-6 h-6 rounded-full bg-emerald-50 border border-emerald-300 flex items-center justify-center text-emerald-600 font-extrabold text-xs shadow-sm">○</div>
-                                ) : attempt === false ? (
-                                  <div key={index} className="w-6 h-6 rounded-full bg-[#ff6f94]/10 border border-[#ff6f94]/30 flex items-center justify-center text-[#ff6f94] font-bold text-xs shadow-sm">×</div>
-                                ) : (
-                                  <div key={index} className="w-6 h-6 rounded-full bg-slate-50 border border-slate-200 flex items-center justify-center text-gray-300 text-[10px] font-bold">-</div>
-                                )
-                              ))}
-                            </div>
-                            {onToggleBookmark && (
-                              <button
-                                onClick={() => onToggleBookmark(q.id)}
-                                className={`p-1.5 rounded-lg transition-colors ${bookmarks.has(q.id) ? 'text-amber-500 bg-amber-50' : 'text-gray-300 hover:text-amber-400 hover:bg-amber-50'}`}
-                                title={bookmarks.has(q.id) ? 'ブックマーク解除' : 'ブックマーク登録'}
-                              >
-                                <Bookmark className={`w-3.5 h-3.5 ${bookmarks.has(q.id) ? 'fill-amber-500' : ''}`} />
-                              </button>
-                            )}
-                            <button
-                              onClick={() => onStartSingleQuestion(q)}
-                              className="px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white font-extrabold rounded-xl shadow-md shadow-teal-500/10 flex items-center gap-1 transition-all cursor-pointer text-xs"
-                            >
-                              <Play className="w-3.5 h-3.5 fill-current" />
-                              解く
-                            </button>
-                          </div>
-                        </div>
-                      );
-                    })
+                    filteredQuestions.map(q => <QuestionCard key={q.id} q={q} showId />)
                   )}
                 </div>
               </div>
