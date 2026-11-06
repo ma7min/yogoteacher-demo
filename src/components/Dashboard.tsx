@@ -9,14 +9,13 @@ import { collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
 // カスタムSVGドーナツチャート（グレー背景固定、色付き部分がアニメーション）
 function AnimatedDoughnut({ correct, incorrect, total, animKey }: { correct: number; incorrect: number; total: number; animKey: string | number }) {
-  const size = 80;
-  const strokeWidth = 10;
-  const pad = strokeWidth / 2 + 1; // ストロークがはみ出ないよう余白
-  const vbSize = size + pad * 2;
-  const r = (size - strokeWidth) / 2;
+  // viewBox 100×100 の中に描画、ストロークが切れないよう中心から半径を小さめに
+  const vbSize = 100;
+  const cx = 50;
+  const cy = 50;
+  const strokeWidth = 12;
+  const r = (vbSize - strokeWidth) / 2 - 2; // 余白2px追加
   const circ = 2 * Math.PI * r;
-  const cx = vbSize / 2;
-  const cy = vbSize / 2;
 
   const pctCorrect = total > 0 ? correct / total : 0;
   const pctIncorrect = total > 0 ? incorrect / total : 0;
@@ -51,7 +50,7 @@ function AnimatedDoughnut({ correct, incorrect, total, animKey }: { correct: num
   const incorrectStart = pctCorrect * circ * progress;
 
   return (
-    <svg width="100%" height="100%" viewBox={`0 0 ${vbSize} ${vbSize}`} style={{ transform: 'rotate(-90deg)' }}>
+    <svg width="100%" height="100%" viewBox={`0 0 ${vbSize} ${vbSize}`} style={{ transform: 'rotate(-90deg)', overflow: 'visible' }}>
       {/* グレー背景（常時表示） */}
       <circle cx={cx} cy={cy} r={r} fill="none" stroke="#e2e8f0" strokeWidth={strokeWidth} />
       {/* 不正解（ピンク）: 正解の後ろに配置 */}
@@ -349,7 +348,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   )}
                 </div>
                 
-                <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 my-1">
+                <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 my-1">
                   <AnimatedDoughnut correct={correctCount} incorrect={incorrectCount} total={totalQuestions} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none mt-0.5">
                     <span className="text-xs font-bold text-gray-400 leading-none">正答率</span>
@@ -392,7 +391,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div className="bg-white p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-teal-50/50 shadow-xl flex flex-col items-center justify-center relative min-h-[190px] sm:min-h-[220px]">
                 <h4 className="font-bold text-gray-800 text-xs sm:text-xs mb-2 sm:mb-3 text-center">今日の達成度</h4>
                 
-                <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20">
+                <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24">
                   <AnimatedDoughnut correct={todayStats.correct} incorrect={Math.max(0, todayStats.attempted - todayStats.correct)} total={10} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center mt-0.5">
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-none">
@@ -585,7 +584,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                   )}
                 </div>
                 
-                <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20 my-1">
+                <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 my-1">
                   <AnimatedDoughnut correct={correctCount} incorrect={incorrectCount} total={totalQuestions} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none mt-0.5">
                     <span className="text-xs font-bold text-gray-400 leading-none">正答率</span>
@@ -628,7 +627,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
               <div className="bg-white p-3 sm:p-4 rounded-2xl sm:rounded-3xl border border-teal-50/50 shadow-xl flex flex-col items-center justify-center relative min-h-[190px] sm:min-h-[220px]">
                 <h4 className="font-bold text-gray-800 text-xs sm:text-xs mb-2 sm:mb-3 text-center">今日の達成度</h4>
                 
-                <div className="relative flex items-center justify-center w-16 h-16 sm:w-20 sm:h-20">
+                <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24">
                   <AnimatedDoughnut correct={todayStats.correct} incorrect={Math.max(0, todayStats.attempted - todayStats.correct)} total={10} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center mt-0.5">
                     <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-none">
