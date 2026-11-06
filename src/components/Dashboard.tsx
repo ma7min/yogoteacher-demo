@@ -344,8 +344,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 my-1">
                   <AnimatedDoughnut correct={correctCount} incorrect={incorrectCount} total={totalQuestions} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none mt-0.5">
-                    <span className="text-xs font-bold text-gray-400 leading-none">正答率</span>
-                    <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-tight">
+                    <span className="text-[10px] font-bold text-gray-400 leading-none">正答率</span>
+                    <span className="text-[10px] font-black text-[#1ec4b6] tracking-tight leading-tight">
                       {activeAnswered.length > 0 ? Math.round(accuracyRate) : 0}
                       <span className="text-xs sm:text-xs font-bold">%</span>
                     </span>
@@ -387,7 +387,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24">
                   <AnimatedDoughnut correct={todayStats.correct} incorrect={Math.max(0, todayStats.attempted - todayStats.correct)} total={10} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center mt-0.5">
-                    <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-none">
+                    <span className="text-[10px] font-black text-[#1ec4b6] tracking-tight leading-none">
                       {todayStats.attempted}
                       <span className="text-xs sm:text-xs font-bold">問</span>
                     </span>
@@ -569,8 +569,8 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24 my-1">
                   <AnimatedDoughnut correct={correctCount} incorrect={incorrectCount} total={totalQuestions} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center pointer-events-none mt-0.5">
-                    <span className="text-xs font-bold text-gray-400 leading-none">正答率</span>
-                    <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-tight">
+                    <span className="text-[10px] font-bold text-gray-400 leading-none">正答率</span>
+                    <span className="text-[10px] font-black text-[#1ec4b6] tracking-tight leading-tight">
                       {activeAnswered.length > 0 ? Math.round(accuracyRate) : 0}
                       <span className="text-xs sm:text-xs font-bold">%</span>
                     </span>
@@ -612,7 +612,7 @@ export const Dashboard: React.FC<DashboardProps> = ({
                 <div className="relative flex items-center justify-center w-20 h-20 sm:w-24 sm:h-24">
                   <AnimatedDoughnut correct={todayStats.correct} incorrect={Math.max(0, todayStats.attempted - todayStats.correct)} total={10} animKey={activeTab} />
                   <div className="absolute text-center flex flex-col items-center justify-center mt-0.5">
-                    <span className="text-sm sm:text-base font-black text-[#1ec4b6] tracking-tight leading-none">
+                    <span className="text-[10px] font-black text-[#1ec4b6] tracking-tight leading-none">
                       {todayStats.attempted}
                       <span className="text-xs sm:text-xs font-bold">問</span>
                     </span>
